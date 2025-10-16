@@ -1,5 +1,5 @@
 import express from "express";
-import { addFeedback, getAcceptedFeedback, getAllFeedback, getFeedbackByStatus, getFeedbackCountByStatus, updateFeedbackStatus } from "../controllers/feedbackController.js";
+import { addFeedback, getAcceptedFeedback, getAllFeedback, getFeedbackByStatus, getFeedbackCountByStatus, updateFeedbackStatus } from "../controllers/Feedbackcontroller.js";
 import auth from "../middleware/auth.js";
 
 const feedbackrouter = express.Router();
