@@ -44,6 +44,10 @@ export async function login(req, res) {
       return res.status(400).json({ message: "User not found" });
     }
 
+    if (users.deletestate == true){
+      return res.status(400).json({message: "You have been banned by Admin temporarily"})
+    }
+
     const isValidPassword = await bcrypt.compare(password, users.password);
     if (!isValidPassword) {
       return res.status(401).json({ message: "Password is incorrect" });
@@ -240,6 +244,49 @@ export async function deleteUser(req, res) {
     return res.status(200).json({ message: "User soft deleted successfully", userId: id });
   } catch (error) {
     console.error("Error deleting user:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
+export async function restoreUser(req, res) {
+  try {
+    const { id } = req.params;
+
+    // Validate the user ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    // Find the user to delete
+    const userToDelete = await user.findById(id);
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Prevent deleting admin users
+    if (userToDelete.role === "admin") {
+      return res.status(403).json({ message: "Cannot restore admin users" });
+    }
+
+    // Check if the requesting user is authorized (assuming req.user is set by auth middleware)
+    if (req.user.role !== "admin" && req.user.id !== id) {
+      return res.status(403).json({ message: "Unauthorized to restore this user" });
+    }
+
+    // Perform soft delete by updating the deletestate field
+    const updatedUser = await user.findByIdAndUpdate(
+      id,
+      { deletestate: false },
+      { new: false } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(500).json({ message: "Failed to restore user" });
+    }
+
+    return res.status(200).json({ message: "User restored successfully", userId: id });
+  } catch (error) {
+    console.error("Error restoring user:", error);
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 }

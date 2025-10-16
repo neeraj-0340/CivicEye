@@ -10,6 +10,7 @@ export const UserDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [restoring, setRestoring] = useState(false); // New state for restore action
 
   useEffect(() => {
     fetchUserDetails();
@@ -44,40 +45,73 @@ export const UserDetails = () => {
     }
   };
 
-  const handleDelete = async (UserId) => {
+  const handleBan = async (userId) => {
     if (
       !window.confirm(
-        "Are you sure you want to delete this user? This action cannot be undone."
+        "Are you sure you want to ban this user? They will lose access temporarily."
       )
     ) {
       return;
     }
 
     try {
-      setDeleting(true); // Set deleting state to true
+      setDeleting(true);
       const token = localStorage.getItem("token");
-      console.log(token);
-      console.log(id);
-      console.log(UserId);
-      await axios.put(`http://localhost:5001/user/deleted/${UserId}`,{}, {
-        headers: {
-          "x-auth-token": token,
-        },
-      });
-      console.log(token);
-      console.log(id);
-      
+      await axios.put(
+        `http://localhost:5001/user/ban/${userId}`,
+        {},
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
 
-      toast.success("User deleted successfully");
-      setTimeout(() => {
-        navigate("/usermanagement");
-      }, 1000);
+      toast.success("User banned successfully");
+      // Refresh user details to reflect updated deletestate
+      await fetchUserDetails();
+      setDeleting(false);
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          "Failed to delete user. Please try again."
+          "Failed to ban user. Please try again."
       );
-      setDeleting(false); // Reset deleting state on error
+      setDeleting(false);
+    }
+  };
+
+  const handleRestore = async (userId) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to restore this user? They will regain access."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setRestoring(true);
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:5001/user/restore/${userId}`,
+        {},
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+
+      toast.success("User restored successfully");
+      // Refresh user details to reflect updated deletestate
+      await fetchUserDetails();
+      setRestoring(false);
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Failed to restore user. Please try again."
+      );
+      setRestoring(false);
     }
   };
 
@@ -151,16 +185,33 @@ export const UserDetails = () => {
           <p className="text-sm text-gray-500">Reports</p>
           <p className="font-medium">{user.reports}</p>
         </div>
+        <div>
+          <p className="text-sm text-gray-500">Status</p>
+          <p className="font-medium">
+            {user.deletestate ? "Banned" : "Active"}
+          </p>
+        </div>
       </div>
 
-      <div className="mt-6 flex justify-end">
-        <button
-          onClick={() => handleDelete(user._id)}
-          disabled={deleting}
-          className="text-white hover:bg-red-800 rounded-2xl bg-red-600 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {deleting ? "Deleting..." : "Delete User"}
-        </button>
+      <div className="mt-6 flex justify-end space-x-4">
+        {!user.deletestate && (
+          <button
+            onClick={() => handleBan(user._id)}
+            disabled={deleting}
+            className="text-white hover:bg-red-800 rounded-2xl bg-red-600 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {deleting ? "Banning..." : "Ban User"}
+          </button>
+        )}
+        {user.deletestate && (
+          <button
+            onClick={() => handleRestore(user._id)}
+            disabled={restoring}
+            className="text-white hover:bg-green-800 rounded-2xl bg-green-600 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {restoring ? "Restoring..." : "Restore User"}
+          </button>
+        )}
       </div>
     </div>
   );

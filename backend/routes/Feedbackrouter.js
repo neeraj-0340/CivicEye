@@ -1,5 +1,5 @@
 import express from "express";
-import { addFeedback, getAllFeedback, getFeedbackByStatus, getFeedbackCountByStatus, updateFeedbackStatus } from "../controllers/feedbackController.js";
+import { addFeedback, getAcceptedFeedback, getAllFeedback, getFeedbackByStatus, getFeedbackCountByStatus, updateFeedbackStatus } from "../controllers/feedbackController.js";
 import auth from "../middleware/auth.js";
 
 const feedbackrouter = express.Router();
@@ -9,6 +9,7 @@ feedbackrouter.post("/add", addFeedback);
 
 // Route to get all feedback
 feedbackrouter.get("/all",auth, getAllFeedback);
+feedbackrouter.get("/allaccepted",auth, getAcceptedFeedback);
 
 feedbackrouter.put("/updatestatus",auth,updateFeedbackStatus)
 feedbackrouter.put("/status/:status",auth,getFeedbackByStatus)

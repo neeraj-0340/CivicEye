@@ -1,6 +1,5 @@
 import feedback from "../model/FeedbackSchema.js";
 
-// Add Feedback
 export const addFeedback = async (req, res) => {
     try {
         const { userId, description, status } = req.body;
@@ -24,7 +23,6 @@ export const addFeedback = async (req, res) => {
     }
 };
 
-// Get All Feedback
 export const getAllFeedback = async (req, res) => {
     try {
         const feedbacks = await feedback.find().populate("userId", "name email");  // Populate user details
@@ -34,7 +32,6 @@ export const getAllFeedback = async (req, res) => {
         res.status(500).json({ message: "Error retrieving feedback", error });
     }
 };
-// Update Feedback Status
 export const updateFeedbackStatus = async (req, res) => {
     try {
         const { feedbackId, status } = req.body;
@@ -67,7 +64,6 @@ export const updateFeedbackStatus = async (req, res) => {
     }
 };
 
-// Get Feedback by Status
 export const getFeedbackByStatus = async (req, res) => {
     try {
         const { status } = req.params;
@@ -105,3 +101,15 @@ export async function getFeedbackCountByStatus(req, res) {
         return res.status(500).json({ message: "Server error", error: error.message });
     }
 }
+
+export const getAcceptedFeedback = async (req, res) => {
+    try {
+        const feedbacks = await feedback
+            .find({ status: "accepted" })
+            .populate("userId", "name email");
+        res.status(200).json(feedbacks);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error retrieving accepted feedback", error });
+    }
+};

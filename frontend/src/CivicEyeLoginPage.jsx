@@ -32,7 +32,7 @@ export const CivicEyeLoginPage = () => {
             navigate('/overview');
           }else{
             navigate('/userhome');
-          }
+          } 
           toast.success(response.data.message)
         }, );
         

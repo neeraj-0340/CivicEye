@@ -11,6 +11,7 @@ export const CivicEyeUserHome = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [feedback, setFeedback] = useState({});
+  const [complaints, setComplaints] = useState([]);
   const [latestFeedbacks, setLatestFeedbacks] = useState([]); // State for fetched feedback
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,26 +41,30 @@ export const CivicEyeUserHome = () => {
         throw new Error("Authentication token not found");
       }
 
-      const response = await axios.get("http://localhost:5001/feedback/all", {
-        headers: { "x-auth-token": token },
-      });
+      const response = await axios.get(
+        "http://localhost:5001/feedback/allaccepted",
+        {
+          headers: { "x-auth-token": token },
+        }
+      );
 
-      // Sort feedback by timestamp (newest first) and take the latest two
       const sortedFeedbacks = response.data
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         .slice(0, 2);
 
       // Format the feedback data
-      const formattedFeedbacks = sortedFeedbacks.filter((item)=>item.status == "accepted").map((item) => ({
-        id: item._id,
-        userName: item.userId?.name || "Anonymous",
-        description: item.description,
-        timestamp: new Date(item.timestamp).toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
-      }));
+      const formattedFeedbacks = sortedFeedbacks
+        .filter((item) => item.status == "accepted")
+        .map((item) => ({
+          id: item._id,
+          userName: item.userId?.name || "Anonymous",
+          description: item.description,
+          timestamp: new Date(item.timestamp).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
+        }));
 
       setLatestFeedbacks(formattedFeedbacks);
     } catch (error) {
@@ -69,13 +74,56 @@ export const CivicEyeUserHome = () => {
   };
 
   useEffect(() => {
+    const fetchComplaints = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Authentication token not found");
+        }
+
+        const response = await axios.get(
+          "http://localhost:5001/complaint/alllist",
+          {
+            headers: {
+              "x-auth-token": token,
+            },
+          }
+        );
+
+        const formattedComplaints = response.data.map((item) => ({
+          id: item._id,
+          date: new Date(item.createdAt).toLocaleDateString(),
+          description: item.description,
+          location: item.location,
+          uploader: item.userId?.name || "User",
+          type: item.type,
+          status: item.status || "Pending",
+          proof: item.proof,
+        }));
+
+        setComplaints(formattedComplaints);
+        setLoading(false);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching complaints:", error);
+        setError("Failed to fetch complaints");
+        setLoading(false);
+      }
+    };
+
+    fetchComplaints();
+  }, [userData.name]);
+
+  useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       setError(null);
       try {
         await Promise.all([fetchUserData(), fetchLatestFeedback()]);
       } catch (error) {
-        setError("Failed to load data");
+        setError(error, "Failed to load data");
       } finally {
         setLoading(false);
       }
@@ -271,7 +319,9 @@ export const CivicEyeUserHome = () => {
               <div className="absolute inset-0 bg-black bg-opacity-40"></div>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center text-white max-w-3xl px-6">
-                  <h1 className="text-4xl font-bold mb-4">Make Your Voice Heard!</h1>
+                  <h1 className="text-4xl font-bold mb-4">
+                    Make Your Voice Heard!
+                  </h1>
                   <p className="text-xl mb-8">
                     Report Problems, Help Your City, and Earn Rewards!
                   </p>
@@ -305,7 +355,7 @@ export const CivicEyeUserHome = () => {
                     <p className="text-lg font-medium text-gray-600 mb-2">
                       Complaints Registered
                     </p>
-                    <p className="text-4xl font-bold text-blue-600">1,002</p>
+                    <p className="text-4xl font-bold text-blue-600">{complaints.length}</p>
                   </div>
                 </div>
                 <div className="bg-white shadow-xl rounded-xl overflow-hidden transform transition-transform hover:scale-105 duration-300">
@@ -416,7 +466,9 @@ export const CivicEyeUserHome = () => {
                     <span className="inline-block bg-blue-600 text-white text-sm px-2 py-1 rounded-full mb-3">
                       Step 3
                     </span>
-                    <p className="font-medium text-gray-800">Authorities Review</p>
+                    <p className="font-medium text-gray-800">
+                      Authorities Review
+                    </p>
                   </div>
                   <div className="bg-white shadow-lg rounded-xl p-6 text-center flex flex-col items-center transform transition-transform hover:scale-105 duration-300">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
@@ -533,7 +585,9 @@ export const CivicEyeUserHome = () => {
                     <h4 className="text-2xl font-bold text-gray-800 mb-4">
                       Support Email
                     </h4>
-                    <p className="text-blue-600 font-medium">support@civiceye.com</p>
+                    <p className="text-blue-600 font-medium">
+                      support@civiceye.com
+                    </p>
                     <button className="mt-6 inline-flex items-center justify-center px-5 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors duration-200">
                       Send an Email
                     </button>
@@ -703,7 +757,9 @@ export const CivicEyeUserHome = () => {
                   </div>
                 </div>
                 <div className="border-t border-gray-700 mt-10 pt-6 text-center text-sm">
-                  <p>© CivicEye 2025 | Empowering Citizens, Improving Communities</p>
+                  <p>
+                    © CivicEye 2025 | Empowering Citizens, Improving Communities
+                  </p>
                 </div>
               </div>
             </footer>

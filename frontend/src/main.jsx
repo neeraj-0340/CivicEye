@@ -19,6 +19,8 @@ import { UserDetails } from "./admin/UserDetails.jsx";
 import { CivicEyeFeedbackManagement } from "./admin/CivicEyeFeedbackManagement.jsx";
 import { AdminFeedbackDetails } from "./admin/AdminFeedbackDetails.jsx";
 import { CivicEyeOverview } from "./admin/CivicEyeOverview.jsx";
+import DemoApp from "./Demo.jsx";
+import { TodoApp } from "./Todo.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -45,6 +47,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/admincomplaintdetail/:id" element={<AdminComplaintDetail/>}></Route>
         <Route path="/user/details/:id" element={<UserDetails/>}></Route>
         <Route path="/adminfeedbackdetails/:id" element={<AdminFeedbackDetails/>}></Route>
+
+        <Route path="/demo" element={<DemoApp/>}></Route>
+        <Route path="/todo" element={<TodoApp/>}></Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>

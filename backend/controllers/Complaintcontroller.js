@@ -5,10 +5,8 @@ import upload from '../multer.js';
 import fs from 'fs';
 import path from 'path';
 
-// Register a new complaint (without multer - you'll use this in your route)
 export const uploadProof = upload.single('proof');
 
-// Register a new complaint
 export async function registerComplaint(req, res) {
     try {
       const { description, type, location } = req.body;
@@ -39,7 +37,6 @@ export async function registerComplaint(req, res) {
       return res.status(500).json({ message: "Server error", error: error.message });
     }
   }
-
 
 export async function getUserComplaints(req, res) {
     try {

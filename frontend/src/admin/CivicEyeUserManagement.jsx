@@ -26,7 +26,7 @@ export const CivicEyeUserManagement = () => {
           },
         });
 
-        const formattedUsers = response.data.filter((user)=>user.deletestate !== true).map((user) => ({
+        const formattedUsers = response.data.map((user) => ({
           id: user._id,
           name: user.name,
           email: user.email,
@@ -36,10 +36,12 @@ export const CivicEyeUserManagement = () => {
             user.idProofType && user.idProofNumber
               ? `${user.idProofType}: ${user.idProofNumber}`
               : "N/A",
+          deleteState: user.deletestate || false, // Add deleteState, default to false if not present
         }));
 
         setUsers(formattedUsers);
         setLoading(false);
+        console.log(formattedUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
         setError("Failed to fetch users");
@@ -148,7 +150,9 @@ export const CivicEyeUserManagement = () => {
                   {users.map((user) => (
                     <tr
                       key={user.id}
-                      className="border-b border-gray-200 hover:bg-gray-50"
+                      className={`border-b border-gray-200 hover:bg-gray-50 ${
+                        user.deleteState ? "bg-red-100 text-red-500" : "text-gray-900"
+                      }`}
                     >
                       <td className="p-4">{user.name}</td>
                       <td className="p-4">{user.email}</td>

@@ -305,13 +305,13 @@ export const CiviEyeComplaintManagement = () => {
                         <td className="p-4 text-gray-600">{complaint.location}</td>
                         <td className="p-4 text-gray-600">{complaint.uploader}</td>
                         <td className="p-4">
-                          <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                          <span className="inline-block bg-purple-100 text-purple-700 px-2 py-1 rounded-lg">
                             {complaint.type}
                           </span>
                         </td>
                         <td className="p-4">
                           <span
-                            className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(
+                            className={`inline-block px-3 py-1 rounded-lg text-sm font-medium ${getStatusBadgeClass(
                               complaint.status
                             )}`}
                           >
