@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/celogofull.png";
-import axios from "axios";
+import api from "../api/config";
 import toast, { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { FiBarChart2, FiBell, FiUsers, FiFileText, FiLogOut } from "react-icons/fi";
@@ -43,14 +43,7 @@ export const CivicEyeOverview = () => {
   // Fetch feedback stats
   const fetchFeedbackStats = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
-      const response = await axios.get("http://localhost:5001/feedback/countbystatus", {
-        headers: { "x-auth-token": token },
-      });
+      const response = await api.get("/feedback/countbystatus");
       setFeedbackStats(response.data);
     } catch (error) {
       console.error("Error fetching feedback stats:", error);
@@ -61,15 +54,8 @@ export const CivicEyeOverview = () => {
   // Fetch recent feedback and complaints
   const fetchRecentData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
       // Fetch feedback
-      const feedbackResponse = await axios.get("http://localhost:5001/feedback/all", {
-        headers: { "x-auth-token": token },
-      });
+      const feedbackResponse = await api.get("/feedback/all");
 
       const formattedFeedback = feedbackResponse.data
         .map((feedback) => ({
@@ -89,9 +75,7 @@ export const CivicEyeOverview = () => {
       setRecentFeedback(formattedFeedback);
 
       // Fetch complaints
-      const complaintResponse = await axios.get("http://127.0.0.1:5001/complaint/alllist", {
-        headers: { "x-auth-token": token },
-      });
+      const complaintResponse = await api.get("/complaint/alllist");
 
       // Calculate complaint stats manually
       const statusCounts = {

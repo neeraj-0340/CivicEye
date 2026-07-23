@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/celogofull.png";
-import axios from "axios";
+import api from "../api/config";
 import { Link, useNavigate } from "react-router-dom";
 import { FiBarChart2, FiBell, FiUsers, FiFileText, FiLogOut, FiSearch } from "react-icons/fi";
 
@@ -19,8 +19,8 @@ export const CiviEyeComplaintManagement = () => {
     if (userId) {
       const getUserData = async () => {
         try {
-          const response = await axios.get(
-            `http://127.0.0.1:5001/user/viewuser/${userId}`
+          const response = await api.get(
+            `/user/viewuser/${userId}`
           );
 
           if (response.data) {
@@ -41,18 +41,8 @@ export const CiviEyeComplaintManagement = () => {
       setLoading(true);
       setError(null);
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Authentication token not found");
-        }
-
-        const response = await axios.get(
-          "http://localhost:5001/complaint/alllist",
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
+        const response = await api.get(
+          "/complaint/alllist"
         );
 
         const formattedComplaints = response.data.map((item) => ({

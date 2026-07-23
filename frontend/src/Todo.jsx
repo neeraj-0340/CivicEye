@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from './api/config';
 import React, { useEffect, useState } from 'react';
 
 export const TodoApp = () => {
@@ -8,7 +8,7 @@ export const TodoApp = () => {
   // Fetch all todos
   const fetchAllTodos = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/todo/findall");
+      const res = await api.get("/todo/findall");
       setTodo(res.data);
     } catch (error) {
       console.log("error fetching data", error);
@@ -19,7 +19,7 @@ export const TodoApp = () => {
   const addTodo = async () => {
     if (!task.trim()) return; // prevent empty input
     try {
-      const res = await axios.post("http://localhost:5000/todo/addtodo", {
+      const res = await api.post("/todo/addtodo", {
         task,
       });
       setTodo([...todos, res.data]); // append new task to state

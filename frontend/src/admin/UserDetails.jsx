@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/config";
 import toast, { Toaster } from "react-hot-toast";
 
 export const UserDetails = () => {
@@ -25,14 +25,7 @@ export const UserDetails = () => {
         return;
       }
 
-      const response = await axios.get(
-        `http://localhost:5001/user/details/${id}`,
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
+      const response = await api.get(`/user/details/${id}`);
 
       setUser(response.data);
       setLoading(false);
@@ -56,16 +49,7 @@ export const UserDetails = () => {
 
     try {
       setDeleting(true);
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:5001/user/ban/${userId}`,
-        {},
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
+      await api.put(`/user/deleted/${userId}`, {});
 
       toast.success("User banned successfully");
       // Refresh user details to reflect updated deletestate
@@ -91,16 +75,7 @@ export const UserDetails = () => {
 
     try {
       setRestoring(true);
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:5001/user/restore/${userId}`,
-        {},
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
+      await api.put(`/user/restore/${userId}`, {});
 
       toast.success("User restored successfully");
       // Refresh user details to reflect updated deletestate

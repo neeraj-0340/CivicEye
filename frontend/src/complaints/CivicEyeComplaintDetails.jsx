@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { API_BASE_URL } from '../api/config';
 import toast, { Toaster } from 'react-hot-toast';
 
 export const CivicEyeComplaintDetails = () => {
@@ -25,14 +25,7 @@ export const CivicEyeComplaintDetails = () => {
         return;
       }
 
-      const response = await axios.get(
-        `http://localhost:5001/complaint/detail/${id}`,
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
+      const response = await api.get(`/complaint/detail/${id}`);
 
       setComplaint(response.data);
       const proofPath = response.data.proof;
@@ -68,14 +61,7 @@ export const CivicEyeComplaintDetails = () => {
         return;
       }
 
-      await axios.delete(
-        `http://localhost:5001/complaint/delete/${id}`,
-        {
-          headers: {
-            "x-auth-token": token,
-          },
-        }
-      );
+      await api.delete(`/complaint/delete/${id}`);
 
       toast.success('Complaint deleted successfully');
       setTimeout(() => {
@@ -106,7 +92,7 @@ export const CivicEyeComplaintDetails = () => {
 
   const renderProofMedia = () => {
     if (!complaint || !complaint.proof) return null;
-    const serverUrl = 'http://localhost:5001';
+    const serverUrl = API_BASE_URL;
     const filePath = complaint.proof.replace(/^.*[\\\/]uploads[\\\/]/, '/uploads/');
     const mediaUrl = `${serverUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
 

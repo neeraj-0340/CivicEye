@@ -1,6 +1,6 @@
 import logo from "./assets/celogofull.png";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "./api/config";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -31,10 +31,8 @@ export const CivicEyeUserprofile = () => {
       return;
     }
 
-    axios
-      .get(`http://localhost:5001/user/profile/${userId}`, {
-        headers: { "x-auth-token": token },
-      })
+    api
+      .get(`/user/profile/${userId}`)
       .then((res) => {
         setFormData({
           fullName: res.data.name || "",
@@ -70,10 +68,8 @@ export const CivicEyeUserprofile = () => {
     }
 
     setIsLoading(true);
-    axios
-      .put(`http://localhost:5001/user/profile/update/${userId}`, formData, {
-        headers: { "x-auth-token": token },
-      })
+    api
+      .put(`/user/profile/update/${userId}`, formData)
       .then(() => {
         toast.success("Profile updated successfully!");
         setIsEditing(false);

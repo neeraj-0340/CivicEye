@@ -12,7 +12,11 @@ const auth = (req, res, next) => {
 
   // Verify token
   try {
-    const decoded = jwt.verify(token, process.env.KEY);
+    const secretKey = process.env.KEY;
+    if (!secretKey) {
+      return res.status(500).json({ message: 'Server configuration error: KEY missing' });
+    }
+    const decoded = jwt.verify(token, secretKey);
     req.user = decoded; // Add user from token payload to request
     next();
   } catch (err) {

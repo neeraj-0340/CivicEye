@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from './api/config';
 import React, { useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ export const CivicEyeLoginPage = () => {
       event.preventDefault()
       try {
         console.table(logindata)
-        const response = await axios.post('http://127.0.0.1:5001/user/login',logindata);
+        const response = await api.post('/user/login',logindata);
 
         console.log(response);
 

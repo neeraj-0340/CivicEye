@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/config";
 import logo from "../assets/celogofull.png";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -80,15 +80,9 @@ export const CivicEyeRegisterComplaint = () => {
       submitData.append("proof", proofFile);
 
       // Send request to backend
-      const response = await axios.post(
-        "http://localhost:5001/complaint/register",
-        submitData,
-        {
-          headers: {
-            "x-auth-token": token,
-            // Don't set Content-Type, it will be set automatically with boundary
-          },
-        }
+      const response = await api.post(
+        "/complaint/register",
+        submitData
       );
 
       setLoading(false);

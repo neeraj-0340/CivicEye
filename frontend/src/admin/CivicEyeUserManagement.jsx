@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/celogofull.png"; // Adjust the path to your logo
-import axios from "axios";
+import api from "../api/config";
 import { Link, useNavigate } from "react-router-dom";
 import { FiBarChart2, FiBell, FiUsers, FiFileText, FiLogOut } from "react-icons/fi";
 
@@ -15,16 +15,7 @@ export const CivicEyeUserManagement = () => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Authentication token not found");
-        }
-
-        const response = await axios.get("http://localhost:5001/user/allusers", {
-          headers: {
-            "x-auth-token": token,
-          },
-        });
+        const response = await api.get("/user/allusers");
 
         const formattedUsers = response.data.map((user) => ({
           id: user._id,

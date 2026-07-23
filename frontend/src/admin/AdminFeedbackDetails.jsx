@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/celogofull.png";
-import axios from "axios";
+import api from "../api/config";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { FiBarChart2, FiBell, FiUsers, FiFileText, FiLogOut } from "react-icons/fi";
 
@@ -21,14 +21,7 @@ export const AdminFeedbackDetails = () => {
       setLoading(true);
       setError(null);
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Authentication token not found");
-        }
-
-        const response = await axios.get(`http://localhost:5001/feedback/all`, {
-          headers: { "x-auth-token": token },
-        });
+        const response = await api.get(`/feedback/all`);
 
         // Find the feedback with the matching ID
         const feedbackData = response.data.find((item) => item._id === id);
@@ -71,11 +64,6 @@ export const AdminFeedbackDetails = () => {
     setUpdateError(null);
     setUpdateSuccess(null);
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
       // Ensure newStatus is valid and lowercase
       if (!newStatus || !["pending", "accepted", "rejected"].includes(newStatus.toLowerCase())) {
         setUpdateError("Please select a valid status");
@@ -83,10 +71,9 @@ export const AdminFeedbackDetails = () => {
       }
 
       const statusToSend = newStatus.toLowerCase();
-      const response = await axios.put(
-        "http://localhost:5001/feedback/updatestatus",
-        { feedbackId: id, status: statusToSend },
-        { headers: { "x-auth-token": token } }
+      const response = await api.put(
+        "/feedback/updatestatus",
+        { feedbackId: id, status: statusToSend }
       );
 
       setFeedback({ ...feedback, status: statusToSend });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 
 export const CivicEyeComplaintList = () => {
   const navigate = useNavigate();
@@ -22,14 +22,7 @@ export const CivicEyeComplaintList = () => {
         return;
       }
 
-      const response = await axios.get(
-        'http://localhost:5001/complaint/list',
-        {
-          headers: {
-            "x-auth-token": token,
-          }
-        }
-      );
+      const response = await api.get('/complaint/list');
 
       setComplaints(response.data);
       setLoading(false);

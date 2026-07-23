@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { API_BASE_URL } from '../api/config';
 import toast, { Toaster } from 'react-hot-toast';
 
 export const AdminComplaintDetail = () => {
@@ -26,13 +26,8 @@ export const AdminComplaintDetail = () => {
         return;
       }
 
-      const response = await axios.get(
-        `http://localhost:5001/complaint/admin/detail/${id}`,
-        {
-          headers: {
-            "x-auth-token": token,
-          }
-        }
+      const response = await api.get(
+        `/complaint/admin/detail/${id}`
       );
       
       setComplaint(response.data);
@@ -78,7 +73,7 @@ export const AdminComplaintDetail = () => {
     if (!complaint || !complaint.proof) return null;
     
     // Get the server URL (assuming uploads are served from backend)
-    const serverUrl = 'http://localhost:5001';
+    const serverUrl = API_BASE_URL;
     
     // Extract the file path (remove any absolute path and keep relative path)
     const filePath = complaint.proof.replace(/^.*[\\\/]uploads[\\\/]/, '/uploads/');
@@ -152,24 +147,14 @@ export const AdminComplaintDetail = () => {
 
   const handleStatusUpdate = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('You must be logged in to update complaint status');
-        return;
-      }
       if (!newStatus) {
         setError('Please select a status');
         return;
       }
 
-      const response = await axios.put(
-        `http://localhost:5001/complaint/update/${id}`,
-        { status: newStatus },
-        {
-          headers: {
-            "x-auth-token": token,
-          }
-        }
+      const response = await api.put(
+        `/complaint/update/${id}`,
+        { status: newStatus }
       );
 
       // Update the complaint state with the new data

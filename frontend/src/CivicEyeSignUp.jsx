@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "./assets/celogofull.png";
-import axios from "axios";
+import api from "./api/config";
 import toast, { Toaster } from "react-hot-toast";
 
 export const CivicEyeSignUp = () => {
@@ -16,8 +16,8 @@ export const CivicEyeSignUp = () => {
     event.preventDefault();
     try {
       console.table(signupdata);
-      let response = await axios.post(
-        "http://127.0.0.1:5001/user/register",
+      let response = await api.post(
+        "/user/register",
         signupdata
       );
       console.log(response.data);

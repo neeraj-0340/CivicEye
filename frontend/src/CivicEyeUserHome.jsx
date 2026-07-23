@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "./assets/celogofull.png";
-import axios from "axios";
+import api from "./api/config";
 import toast, { Toaster } from "react-hot-toast";
 
 export const CivicEyeUserHome = () => {
@@ -20,8 +20,8 @@ export const CivicEyeUserHome = () => {
   const fetchUserData = async () => {
     try {
       if (!userid) return;
-      const response = await axios.get(
-        `http://127.0.0.1:5001/user/viewuser/${userid}`
+      const response = await api.get(
+        `/user/viewuser/${userid}`
       );
 
       if (response.data) {
@@ -36,16 +36,8 @@ export const CivicEyeUserHome = () => {
   // Fetch latest feedback
   const fetchLatestFeedback = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
-      const response = await axios.get(
-        "http://localhost:5001/feedback/allaccepted",
-        {
-          headers: { "x-auth-token": token },
-        }
+      const response = await api.get(
+        "/feedback/allaccepted"
       );
 
       const sortedFeedbacks = response.data
@@ -78,18 +70,8 @@ export const CivicEyeUserHome = () => {
       setLoading(true);
       setError(null);
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Authentication token not found");
-        }
-
-        const response = await axios.get(
-          "http://localhost:5001/complaint/alllist",
-          {
-            headers: {
-              "x-auth-token": token,
-            },
-          }
+        const response = await api.get(
+          "/complaint/alllist"
         );
 
         const formattedComplaints = response.data.map((item) => ({
@@ -149,29 +131,16 @@ export const CivicEyeUserHome = () => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        toast.error("You must be logged in to submit feedback");
-        return;
-      }
-
       if (!feedback.description || feedback.description.trim() === "") {
         toast.error("Please enter your feedback");
         return;
       }
 
-      const response = await axios.post(
-        "http://localhost:5001/feedback/add",
+      const response = await api.post(
+        "/feedback/add",
         {
           userId: userid,
           description: feedback.description,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
         }
       );
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/celogofull.png";
-import axios from "axios";
+import api from "../api/config";
 import { Link, useNavigate } from "react-router-dom";
 import { FiBarChart2, FiBell, FiUsers, FiFileText, FiLogOut, FiSearch, FiRefreshCw } from "react-icons/fi";
 import { FaSpinner } from "react-icons/fa";
@@ -18,14 +18,7 @@ export const CivicEyeFeedbackManagement = () => {
     const fetchFeedbacks = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Authentication token not found");
-        }
-
-        const feedbackResponse = await axios.get("http://localhost:5001/feedback/all", {
-          headers: { "x-auth-token": token },
-        });
+        const feedbackResponse = await api.get("/feedback/all");
         console.log("Raw feedback response:", feedbackResponse.data);
         const formattedFeedbacks = feedbackResponse.data.map((feedback) => ({
           id: feedback._id,
@@ -75,10 +68,7 @@ export const CivicEyeFeedbackManagement = () => {
     const fetchFeedbacks = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        const feedbackResponse = await axios.get("http://localhost:5001/feedback/all", {
-          headers: { "x-auth-token": token },
-        });
+        const feedbackResponse = await api.get("/feedback/all");
         const formattedFeedbacks = feedbackResponse.data.map((feedback) => ({
           id: feedback._id,
           userName: feedback.userId?.name || "Unknown",
