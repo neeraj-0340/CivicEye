@@ -19,6 +19,52 @@ import AdminSidebar from "../components/AdminSidebar";
 const COMPLAINT_COLORS = ['#f59e0b', '#0891b2', '#16a34a', '#dc2626'];
 const FEEDBACK_COLORS = ['#f59e0b', '#16a34a', '#dc2626'];
 
+function computeComplaintStatsFallback(rawList = []) {
+  const statusCounts = { Pending: 0, "In Progress": 0, Resolved: 0, Rejected: 0 };
+  const categoryCounts = {};
+
+  rawList.forEach((c) => {
+    const s = c.status || "Pending";
+    if (statusCounts[s] !== undefined) statusCounts[s]++;
+    else statusCounts[s] = 1;
+
+    const cat = c.type || "Other";
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+  });
+
+  const now = new Date();
+  const monthly = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const label = d.toLocaleString("default", { month: "short", year: "2-digit" });
+
+    const count = rawList.filter((c) => {
+      const cd = new Date(c.createdAt);
+      return cd.getFullYear() === year && cd.getMonth() === month;
+    }).length;
+
+    monthly.push({ month: label, count });
+  }
+
+  return {
+    totalComplaints: rawList.length,
+    statusCounts,
+    categoryCounts,
+    monthly,
+  };
+}
+
+function computeFeedbackStatsFallback(rawList = []) {
+  const stats = { pending: 0, accepted: 0, rejected: 0 };
+  rawList.forEach((f) => {
+    const s = (f.status || "pending").toLowerCase();
+    if (stats[s] !== undefined) stats[s]++;
+  });
+  return stats;
+}
+
 export const CivicEyeOverview = () => {
   const navigate = useNavigate();
   const [complaintStats, setComplaintStats] = useState(null);
@@ -32,18 +78,40 @@ export const CivicEyeOverview = () => {
     setLoading(true);
     setError(null);
     try {
-      const [cStats, fStats, feedbacks, complaints] = await Promise.all([
-        api.get("/stats/complaints"),
-        api.get("/stats/feedback"),
-        api.get("/feedback/all"),
-        api.get("/complaint/alllist"),
+      // 1. Fetch complaints list & feedback list (always available)
+      const [feedbacksRes, complaintsRes] = await Promise.all([
+        api.get("/feedback/all").catch(() => ({ data: [] })),
+        api.get("/complaint/alllist").catch(() => ({ data: [] })),
       ]);
 
-      setComplaintStats(cStats.data.data);
-      setFeedbackStats(fStats.data.data);
+      const rawFeedbacks = Array.isArray(feedbacksRes.data) ? feedbacksRes.data : (feedbacksRes.data?.data || []);
+      const rawComplaints = Array.isArray(complaintsRes.data) ? complaintsRes.data : (complaintsRes.data?.data || []);
+
+      // 2. Try fetching backend aggregated stats, fallback to client-side computation if 404
+      let cStats = null;
+      let fStats = null;
+
+      try {
+        const res = await api.get("/stats/complaints");
+        cStats = res.data?.data;
+      } catch {
+        // Fallback: compute stats client-side from rawComplaints
+        cStats = computeComplaintStatsFallback(rawComplaints);
+      }
+
+      try {
+        const res = await api.get("/stats/feedback");
+        fStats = res.data?.data;
+      } catch {
+        // Fallback: compute stats client-side from rawFeedbacks
+        fStats = computeFeedbackStatsFallback(rawFeedbacks);
+      }
+
+      setComplaintStats(cStats);
+      setFeedbackStats(fStats);
 
       // Recent feedback (top 5 newest)
-      const formattedFeedback = (feedbacks.data || [])
+      const formattedFeedback = rawFeedbacks
         .map(f => ({
           id: f._id,
           userName: f.userId?.name || "Unknown",
@@ -51,14 +119,14 @@ export const CivicEyeOverview = () => {
           displayTimestamp: new Date(f.timestamp).toLocaleDateString("en-GB", {
             day: "2-digit", month: "short", year: "numeric",
           }),
-          status: f.status,
+          status: f.status || "pending",
         }))
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         .slice(0, 5);
       setRecentFeedback(formattedFeedback);
 
       // Recent complaints (top 5 newest)
-      const formattedComplaints = (complaints.data || [])
+      const formattedComplaints = rawComplaints
         .map(c => ({
           id: c._id,
           userName: c.userId?.name || "Unknown",
@@ -67,7 +135,7 @@ export const CivicEyeOverview = () => {
           displayTimestamp: new Date(c.createdAt).toLocaleDateString("en-GB", {
             day: "2-digit", month: "short", year: "numeric",
           }),
-          status: c.status,
+          status: c.status || "Pending",
         }))
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 5);
@@ -75,7 +143,6 @@ export const CivicEyeOverview = () => {
     } catch (err) {
       console.error("Overview fetch error:", err);
       setError("Failed to load dashboard data.");
-      toast.error("Failed to load some dashboard data.");
     } finally {
       setLoading(false);
     }
