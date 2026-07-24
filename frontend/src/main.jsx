@@ -23,11 +23,13 @@ import { CivicEyeOverview } from "./admin/CivicEyeOverview.jsx";
 import DemoApp from "./Demo.jsx";
 import { TodoApp } from "./Todo.jsx";
 import { UserProvider } from "./contexts/UserContext.jsx";
+import { ThemeProvider } from "./contexts/ThemeContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <UserProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <UserProvider>
+        <BrowserRouter>
       <Routes>
         {/* <Route path="/app" element={<App/>}></Route> */}
         <Route path="/" element={<Navigate to="/userhome"/>}></Route>
@@ -55,7 +57,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/todo" element={<TodoApp/>}></Route>
       </Routes>
       </BrowserRouter>
-    </UserProvider>
+      </UserProvider>
+    </ThemeProvider>
   </StrictMode>
 );
 

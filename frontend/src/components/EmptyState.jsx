@@ -16,9 +16,9 @@ const EmptyState = ({
 }) => (
   <div className="empty-state">
     <Icon size={48} style={{ marginBottom: '1rem', opacity: 0.4 }} />
-    <p style={{ fontWeight: 600, fontSize: '1rem', color: '#374151', marginBottom: 4 }}>{title}</p>
+    <p style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: 4 }}>{title}</p>
     {description && (
-      <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: 4 }}>{description}</p>
+      <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: 4 }}>{description}</p>
     )}
     {action && <div style={{ marginTop: '1.25rem' }}>{action}</div>}
   </div>

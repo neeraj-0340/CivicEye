@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "./assets/celogofull.png";
 import api from "./api/config";
 import toast, { Toaster } from "react-hot-toast";
+import ThemeToggle from "./components/ThemeToggle";
 
 export const CivicEyeUserHome = () => {
   const navigate = useNavigate();
@@ -169,10 +170,10 @@ export const CivicEyeUserHome = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div style={{ background: 'var(--background)', minHeight: '100vh', color: 'var(--text-primary)' }}>
       <Toaster />
       {/* Navigation */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
+      <header style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }} className="shadow-md sticky top-0 z-50">
         <div className="mx-auto flex items-center justify-between py-4 px-6">
           <img
             src={logo}
@@ -204,67 +205,77 @@ export const CivicEyeUserHome = () => {
             </button>
           </nav>
 
-          {/* Profile Dropdown */}
-          <div className="relative">
-            <button
-              className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center">
-                {userData.name ? userData.name.charAt(0).toUpperCase() : "U"}
-              </div>
-              <span className="text-gray-700 font-medium hidden md:block">
-                {userData.name || "Account"}
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 text-gray-500"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-              </svg>
-            </button>
+          {/* Navigation Right Actions: Theme Toggle & Profile Dropdown */}
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
 
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 py-1 z-10">
-                <Link
-                  to="/userprofile"
-                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 transition-colors duration-200"
+            {/* Profile Dropdown */}
+            <div className="relative">
+              <button
+                className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 focus:outline-none"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center">
+                  {userData.name ? userData.name.charAt(0).toUpperCase() : "U"}
+                </div>
+                <span className="text-gray-700 font-medium hidden md:block" style={{ color: 'var(--text-primary)' }}>
+                  {userData.name || "Account"}
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 text-gray-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2 text-blue-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-                  </svg>
-                  Profile
-                </Link>
-                <button
-                  onClick={() => {
-                    localStorage.removeItem("id");
-                    localStorage.removeItem("token");
-                    setTimeout(() => {
-                      toast.success("Logged out successfully");
-                      navigate("/login");
-                    }, 1000);
-                  }}
-                  className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 transition-colors duration-200"
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </button>
+
+              {dropdownOpen && (
+                <div
+                  className="absolute right-0 mt-2 w-48 shadow-lg rounded-lg border py-1 z-10"
+                  style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2 text-blue-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                  <Link
+                    to="/userprofile"
+                    className="flex items-center px-4 py-2 transition-colors duration-200"
+                    style={{ color: 'var(--text-primary)' }}
                   >
-                    <path d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V7.414l-4-4H3zm9 2.586L14.586 8H12V5.586zM5 5a1 1 0 011-1h4a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h4a1 1 0 100-2H6z" />
-                  </svg>
-                  Logout
-                </button>
-              </div>
-            )}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2 text-blue-500"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                    </svg>
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem("id");
+                      localStorage.removeItem("token");
+                      setTimeout(() => {
+                        toast.success("Logged out successfully");
+                        navigate("/login");
+                      }, 1000);
+                    }}
+                    className="flex items-center w-full text-left px-4 py-2 transition-colors duration-200"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2 text-blue-500"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V7.414l-4-4H3zm9 2.586L14.586 8H12V5.586zM5 5a1 1 0 011-1h4a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h4a1 1 0 100-2H6z" />
+                    </svg>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>

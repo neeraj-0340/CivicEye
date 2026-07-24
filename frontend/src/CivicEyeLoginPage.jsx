@@ -1,7 +1,8 @@
 import api from './api/config';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
+import ThemeToggle from './components/ThemeToggle';
 
 export const CivicEyeLoginPage = () => {
 
@@ -13,7 +14,6 @@ export const CivicEyeLoginPage = () => {
   const change = (event) => {
     const { name, value } = event.target;
     setLogindata({ ...logindata, [name]: value });
-    // Clear field error on change
     if (errors[name]) setErrors({ ...errors, [name]: '' });
   };
 
@@ -53,23 +53,26 @@ export const CivicEyeLoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen relative" style={{ background: 'var(--background)', color: 'var(--text-primary)' }}>
       <Toaster position="top-right" />
-      <div className="bg-white shadow-md rounded-lg flex w-3/4 max-w-4xl overflow-hidden">
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
+      <div className="shadow-md rounded-lg flex w-3/4 max-w-4xl overflow-hidden border" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
         {/* Left Section */}
-        <div className=" p-8 flex flex-col justify-center items-center border-r">
-          <h1 className="text-3xl font-bold text-gray-700">
+        <div className="p-8 flex flex-col justify-center items-center border-r" style={{ borderColor: 'var(--border)' }}>
+          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Civic<span className="text-blue-500">EYE</span>
           </h1>
-          <p className="mt-4 text-gray-600 text-center">Welcome to CivicEye!</p>
-          <p className="text-gray-500 text-center mt-2">
+          <p className="mt-4 text-center" style={{ color: 'var(--text-secondary)' }}>Welcome to CivicEye!</p>
+          <p className="text-center mt-2" style={{ color: 'var(--text-muted)' }}>
             Your platform to report, track, and resolve public issues with ease.
           </p>
         </div>
 
         {/* Right Section */}
         <div className="w-1/2 p-8 flex flex-col justify-center">
-          <h2 className="text-2xl font-bold text-gray-700 text-center">
+          <h2 className="text-2xl font-bold text-center" style={{ color: 'var(--text-primary)' }}>
             SIGN <span className="text-blue-500">IN</span>
           </h2>
           <form className="mt-6" onSubmit={submit} noValidate>
@@ -81,7 +84,7 @@ export const CivicEyeLoginPage = () => {
                 onChange={change}
                 value={logindata.email}
                 placeholder="Email"
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.email ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.email ? 'error' : ''}`}
                 disabled={submitting}
               />
               {errors.email && <p className="form-error">{errors.email}</p>}
@@ -94,7 +97,7 @@ export const CivicEyeLoginPage = () => {
                 onChange={change}
                 value={logindata.password}
                 placeholder="Password"
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.password ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.password ? 'error' : ''}`}
                 disabled={submitting}
               />
               {errors.password && <p className="form-error">{errors.password}</p>}
@@ -107,13 +110,13 @@ export const CivicEyeLoginPage = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-blue-500 text-white py-2 rounded-md mt-4 hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn btn-primary btn-block mt-4"
             >
               {submitting && <span className="spinner" style={{ borderTopColor: 'white' }} />}
               {submitting ? 'Signing In…' : 'SIGN IN'}
             </button>
           </form>
-          <p className="text-center text-gray-600 mt-4">
+          <p className="text-center mt-4" style={{ color: 'var(--text-secondary)' }}>
             Do not Have an Account?{' '}
             <Link to="/signup" className="text-blue-500 font-semibold hover:underline">
               Sign up

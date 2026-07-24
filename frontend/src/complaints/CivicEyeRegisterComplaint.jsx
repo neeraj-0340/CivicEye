@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/config";
 import logo from "../assets/celogofull.png";
 import toast, { Toaster } from "react-hot-toast";
+import ThemeToggle from "../components/ThemeToggle";
 
 export const CivicEyeRegisterComplaint = () => {
   const navigate = useNavigate();
@@ -30,23 +31,14 @@ export const CivicEyeRegisterComplaint = () => {
 
     setProofFile(file);
 
-    // Create preview for images
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setFilePreview({
-          type: 'image',
-          src: e.target.result
-        });
+        setFilePreview({ type: 'image', src: e.target.result });
       };
       reader.readAsDataURL(file);
-    } 
-    // Create preview for videos
-    else if (file.type.startsWith('video/')) {
-      setFilePreview({
-        type: 'video',
-        src: URL.createObjectURL(file)
-      });
+    } else if (file.type.startsWith('video/')) {
+      setFilePreview({ type: 'video', src: URL.createObjectURL(file) });
     }
   };
 
@@ -56,41 +48,30 @@ export const CivicEyeRegisterComplaint = () => {
     setError("");
 
     try {
-      // Get token from localStorage
       const token = localStorage.getItem("token");
-
       if (!token) {
         setError("You must be logged in to register a complaint");
         setLoading(false);
         return;
       }
-
-      // Check if proof file is selected
       if (!proofFile) {
         setError("Please upload a proof file (image or video)");
         setLoading(false);
         return;
       }
 
-      // Create FormData object for multipart/form-data
       const submitData = new FormData();
       submitData.append("description", formData.description);
       submitData.append("type", formData.type);
       submitData.append("location", formData.location);
       submitData.append("proof", proofFile);
 
-      // Send request to backend
-      const response = await api.post(
-        "/complaint/register",
-        submitData
-      );
-
+      const response = await api.post("/complaint/register", submitData);
       setLoading(false);
 
-      // Show success message and redirect to complaints list
       toast.success(response.data.message);
       setTimeout(() => {
-        navigate('/complaintlist')
+        navigate('/complaintlist');
       }, 1000);
     } catch (error) {
       setLoading(false);
@@ -129,26 +110,30 @@ export const CivicEyeRegisterComplaint = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div style={{ background: 'var(--background)', minHeight: '100vh', color: 'var(--text-primary)' }}>
       <Toaster/>
-      {/* Back button in top left corner */}
-      <div className="fixed top-4 left-4 z-10">
+      
+      {/* Top Header Actions */}
+      <div className="fixed top-4 left-4 right-4 z-10 flex justify-between items-center pointer-events-none">
         <button
           onClick={() => navigate(-1)}
-          className="px-3 py-1 text-sm text-white bg-blue-800 rounded-full shadow-lg hover:bg-blue-700 transition-colors flex items-center"
+          className="pointer-events-auto px-3 py-1.5 text-sm text-white bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors flex items-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Back
         </button>
+
+        <div className="pointer-events-auto">
+          <ThemeToggle />
+        </div>
       </div>
       
-      {/* Header with Logo and Title */}
+      {/* Header Banner */}
       <header className="bg-blue-600 text-white py-4 shadow-md">
         <div className="max-w-lg mx-auto px-4 flex items-center justify-center">
           <div className="flex flex-col items-center">
-            {/* Logo and text container */}
             <img src={logo} alt="CivicEye" className="h-10 mb-1" />
             <p className="text-xs text-blue-100">Community Safety Reporting System</p>
           </div>
@@ -156,12 +141,14 @@ export const CivicEyeRegisterComplaint = () => {
       </header>
 
       <div className="max-w-lg mx-auto p-4 mb-8">
-        <h2 className="text-xl font-bold mt-6 mb-4 px-2 text-center text-blue-800">Report an Incident</h2>
+        <h2 className="text-xl font-bold mt-6 mb-4 px-2 text-center" style={{ color: 'var(--primary)' }}>
+          Report an Incident
+        </h2>
         
-        <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100">
+        <div className="card p-6" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
           {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+            <div className="mb-4 p-3 rounded-md border flex items-center" style={{ background: 'var(--danger-bg)', borderColor: 'var(--danger-border)', color: 'var(--danger-text)' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
               {error}

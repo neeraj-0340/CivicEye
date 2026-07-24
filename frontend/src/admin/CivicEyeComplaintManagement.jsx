@@ -107,8 +107,8 @@ export const CiviEyeComplaintManagement = () => {
       <div className="admin-main">
         {/* Header */}
         <div style={{
-          background: "white",
-          borderBottom: "1px solid var(--color-gray-200)",
+          background: "var(--surface)",
+          borderBottom: "1px solid var(--border)",
           padding: "1rem 1.5rem",
           display: "flex",
           alignItems: "center",
@@ -117,10 +117,10 @@ export const CiviEyeComplaintManagement = () => {
           gap: "0.75rem",
         }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "var(--color-gray-800)" }}>
+            <h1 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "var(--text-primary)" }}>
               Complaints
             </h1>
-            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-gray-400)", marginTop: 2 }}>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-muted)", marginTop: 2 }}>
               {pagination.totalItems} total complaints
             </p>
           </div>
@@ -129,7 +129,7 @@ export const CiviEyeComplaintManagement = () => {
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <div style={{ position: "relative" }}>
               <FiSearch
-                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--color-gray-400)" }}
+                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
                 size={15}
               />
               <input
@@ -157,8 +157,8 @@ export const CiviEyeComplaintManagement = () => {
 
         {/* Status Tabs */}
         <div style={{
-          background: "white",
-          borderBottom: "1px solid var(--color-gray-200)",
+          background: "var(--surface)",
+          borderBottom: "1px solid var(--border)",
           padding: "0 1.5rem",
           display: "flex",
           gap: "0.25rem",
@@ -172,8 +172,8 @@ export const CiviEyeComplaintManagement = () => {
                 padding: "0.625rem 1rem",
                 background: "none",
                 border: "none",
-                borderBottom: activeTab === tab ? "2px solid var(--color-primary)" : "2px solid transparent",
-                color: activeTab === tab ? "var(--color-primary)" : "var(--color-gray-500)",
+                borderBottom: activeTab === tab ? "2px solid var(--primary)" : "2px solid transparent",
+                color: activeTab === tab ? "var(--primary)" : "var(--text-secondary)",
                 fontWeight: activeTab === tab ? 600 : 400,
                 fontSize: "0.875rem",
                 cursor: "pointer",

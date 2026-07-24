@@ -15,6 +15,7 @@ import { SkeletonStatCard } from "../components/Skeleton";
 import EmptyState from "../components/EmptyState";
 import StatusBadge from "../components/StatusBadge";
 import AdminSidebar from "../components/AdminSidebar";
+import { useTheme } from "../contexts/ThemeContext";
 
 const COMPLAINT_COLORS = ['#f59e0b', '#0891b2', '#16a34a', '#dc2626'];
 const FEEDBACK_COLORS = ['#f59e0b', '#16a34a', '#dc2626'];
@@ -67,6 +68,8 @@ function computeFeedbackStatsFallback(rawList = []) {
 
 export const CivicEyeOverview = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [complaintStats, setComplaintStats] = useState(null);
   const [feedbackStats, setFeedbackStats] = useState(null);
   const [recentFeedback, setRecentFeedback] = useState([]);
@@ -185,18 +188,18 @@ export const CivicEyeOverview = () => {
       <div className="admin-main">
         {/* Header */}
         <div style={{
-          background: 'white',
-          borderBottom: '1px solid var(--color-gray-200)',
+          background: 'var(--surface)',
+          borderBottom: '1px solid var(--border)',
           padding: '1rem 1.5rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-gray-800)' }}>
+            <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
               Dashboard Overview
             </h1>
-            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-gray-400)', marginTop: 2 }}>
+            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>
               Real-time statistics and recent activity
             </p>
           </div>
@@ -208,7 +211,7 @@ export const CivicEyeOverview = () => {
         <div className="admin-content">
           {/* ---- Complaint Stat Cards ---- */}
           <section style={{ marginBottom: '1.5rem' }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gray-400)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
               Complaint Statistics
             </p>
             <div className="stat-grid">
@@ -217,15 +220,15 @@ export const CivicEyeOverview = () => {
               ) : (
                 <>
                   <StatCard label="Total Complaints" value={complaintStats?.totalComplaints ?? 0}
-                    icon={FiFileText} iconBg="#eff6ff" iconColor="#2563eb" />
+                    icon={FiFileText} iconBg="var(--primary-subtle)" iconColor="var(--primary)" />
                   <StatCard label="Pending" value={complaintStats?.statusCounts?.Pending ?? 0}
-                    icon={FiLoader} iconBg="#fffbeb" iconColor="#d97706" />
+                    icon={FiLoader} iconBg="var(--warning-bg)" iconColor="var(--warning)" />
                   <StatCard label="In Progress" value={complaintStats?.statusCounts?.['In Progress'] ?? 0}
-                    icon={FiTrendingUp} iconBg="#ecfeff" iconColor="#0891b2" />
+                    icon={FiTrendingUp} iconBg="var(--info-bg)" iconColor="var(--info)" />
                   <StatCard label="Resolved" value={complaintStats?.statusCounts?.Resolved ?? 0}
-                    icon={FiCheckCircle} iconBg="#f0fdf4" iconColor="#16a34a" />
+                    icon={FiCheckCircle} iconBg="var(--success-bg)" iconColor="var(--success)" />
                   <StatCard label="Rejected" value={complaintStats?.statusCounts?.Rejected ?? 0}
-                    icon={FiXCircle} iconBg="#fef2f2" iconColor="#dc2626" />
+                    icon={FiXCircle} iconBg="var(--danger-bg)" iconColor="var(--danger)" />
                 </>
               )}
             </div>
@@ -233,7 +236,7 @@ export const CivicEyeOverview = () => {
 
           {/* ---- Feedback Stat Cards ---- */}
           <section style={{ marginBottom: '1.5rem' }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gray-400)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
               Feedback Statistics
             </p>
             <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
@@ -242,13 +245,13 @@ export const CivicEyeOverview = () => {
               ) : (
                 <>
                   <StatCard label="Total Feedback" value={totalFeedback}
-                    icon={FiMessageSquare} iconBg="#f5f3ff" iconColor="#7c3aed" />
+                    icon={FiMessageSquare} iconBg="var(--primary-subtle)" iconColor="var(--secondary)" />
                   <StatCard label="Pending" value={feedbackStats?.pending ?? 0}
-                    icon={FiLoader} iconBg="#fffbeb" iconColor="#d97706" />
+                    icon={FiLoader} iconBg="var(--warning-bg)" iconColor="var(--warning)" />
                   <StatCard label="Accepted" value={feedbackStats?.accepted ?? 0}
-                    icon={FiCheckCircle} iconBg="#f0fdf4" iconColor="#16a34a" />
+                    icon={FiCheckCircle} iconBg="var(--success-bg)" iconColor="var(--success)" />
                   <StatCard label="Rejected" value={feedbackStats?.rejected ?? 0}
-                    icon={FiXCircle} iconBg="#fef2f2" iconColor="#dc2626" />
+                    icon={FiXCircle} iconBg="var(--danger-bg)" iconColor="var(--danger)" />
                 </>
               )}
             </div>
@@ -257,7 +260,7 @@ export const CivicEyeOverview = () => {
           {/* ---- Charts ---- */}
           {!loading && !error && (
             <section style={{ marginBottom: '1.5rem' }}>
-              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-gray-400)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
+              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
                 Charts
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
@@ -274,8 +277,16 @@ export const CivicEyeOverview = () => {
                             <Cell key={i} fill={COMPLAINT_COLORS[i % COMPLAINT_COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(v) => [v, 'Complaints']} />
-                        <Legend />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                            borderColor: isDark ? '#334155' : '#e2e8f0',
+                            color: isDark ? '#f8fafc' : '#0f172a',
+                            borderRadius: '0.5rem',
+                          }}
+                          formatter={(v) => [v, 'Complaints']}
+                        />
+                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569' }} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -296,8 +307,15 @@ export const CivicEyeOverview = () => {
                             <Cell key={i} fill={FEEDBACK_COLORS[i % FEEDBACK_COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip />
-                        <Legend />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                            borderColor: isDark ? '#334155' : '#e2e8f0',
+                            color: isDark ? '#f8fafc' : '#0f172a',
+                            borderRadius: '0.5rem',
+                          }}
+                        />
+                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569' }} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -311,12 +329,19 @@ export const CivicEyeOverview = () => {
                   {hasMonthlyData ? (
                     <ResponsiveContainer width="100%" height={260}>
                       <LineChart data={monthlyData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-gray-200)" />
-                        <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                        <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="count" stroke="#2563eb" strokeWidth={2}
+                        <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#334155' : '#e2e8f0'} />
+                        <XAxis dataKey="month" tick={{ fontSize: 11, fill: isDark ? '#cbd5e1' : '#475569' }} />
+                        <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: isDark ? '#cbd5e1' : '#475569' }} />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                            borderColor: isDark ? '#334155' : '#e2e8f0',
+                            color: isDark ? '#f8fafc' : '#0f172a',
+                            borderRadius: '0.5rem',
+                          }}
+                        />
+                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569' }} />
+                        <Line type="monotone" dataKey="count" stroke={isDark ? '#60a5fa' : '#2563eb'} strokeWidth={2}
                           dot={{ r: 4 }} activeDot={{ r: 6 }} name="Complaints" />
                       </LineChart>
                     </ResponsiveContainer>

@@ -19,8 +19,8 @@ body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   line-height: 1.6;
-  color: var(--color-gray-800);
-  background-color: var(--bg-page);
+  color: var(--text-primary);
+  background-color: var(--background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -32,13 +32,13 @@ img {
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--primary);
   text-decoration: none;
   transition: color var(--transition-base);
 }
 
 a:hover {
-  color: var(--color-primary-dark);
+  color: var(--primary-hover);
 }
 
 /* ============================================================
@@ -58,7 +58,8 @@ a:hover {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
 
 .data-table {
@@ -68,15 +69,15 @@ a:hover {
 }
 
 .data-table thead tr {
-  background-color: var(--color-gray-50);
-  border-bottom: 2px solid var(--color-gray-200);
+  background-color: var(--table-header-bg);
+  border-bottom: 2px solid var(--border);
 }
 
 .data-table th {
   text-align: left;
   padding: var(--spacing-3) var(--spacing-4);
   font-weight: 600;
-  color: var(--color-gray-600);
+  color: var(--table-header-text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.7rem;
@@ -84,8 +85,12 @@ a:hover {
 }
 
 .data-table tbody tr {
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--border);
   transition: background-color var(--transition-fast);
+}
+
+.data-table tbody tr:nth-child(even) {
+  background-color: var(--table-alt-row);
 }
 
 .data-table tbody tr:last-child {
@@ -93,12 +98,12 @@ a:hover {
 }
 
 .data-table tbody tr:hover {
-  background-color: var(--color-primary-subtle);
+  background-color: var(--table-row-hover);
 }
 
 .data-table td {
   padding: var(--spacing-3) var(--spacing-4);
-  color: var(--color-gray-700);
+  color: var(--text-primary);
   vertical-align: middle;
 }
 
@@ -116,42 +121,42 @@ a:hover {
 }
 
 .badge-pending {
-  background-color: var(--color-warning-bg);
-  color: var(--color-warning-text);
-  border: 1px solid var(--color-warning-border);
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid var(--warning-border);
 }
 
 .badge-in-progress {
-  background-color: var(--color-info-bg);
-  color: var(--color-info-text);
-  border: 1px solid var(--color-info-border);
+  background-color: var(--info-bg);
+  color: var(--info-text);
+  border: 1px solid var(--info-border);
 }
 
 .badge-resolved {
-  background-color: var(--color-success-bg);
-  color: var(--color-success-text);
-  border: 1px solid var(--color-success-border);
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
 }
 
 .badge-rejected {
-  background-color: var(--color-danger-bg);
-  color: var(--color-danger-text);
-  border: 1px solid var(--color-danger-border);
+  background-color: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid var(--danger-border);
 }
 
 .badge-accepted {
-  background-color: var(--color-success-bg);
-  color: var(--color-success-text);
-  border: 1px solid var(--color-success-border);
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
 }
 
 /* Stat Cards */
 .stat-card {
-  background: var(--bg-card);
+  background: var(--card);
   border-radius: var(--radius-xl);
   padding: var(--spacing-5) var(--spacing-6);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: var(--spacing-4);
@@ -161,7 +166,7 @@ a:hover {
 
 .stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: var(--shadow-hover);
 }
 
 .stat-card-icon {
@@ -182,7 +187,7 @@ a:hover {
 
 .stat-card-label {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
+  color: var(--text-secondary);
   font-weight: 500;
   margin-bottom: 2px;
   white-space: nowrap;
@@ -193,7 +198,7 @@ a:hover {
 .stat-card-value {
   font-size: var(--font-size-2xl);
   font-weight: 700;
-  color: var(--color-gray-900);
+  color: var(--text-primary);
   line-height: 1.2;
 }
 
@@ -215,9 +220,9 @@ a:hover {
   height: 36px;
   padding: 0 var(--spacing-2);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-gray-300);
-  background: var(--bg-card);
-  color: var(--color-gray-700);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
   font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
@@ -225,15 +230,15 @@ a:hover {
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background-color: var(--color-primary-subtle);
-  border-color: var(--color-primary-border);
-  color: var(--color-primary);
+  background-color: var(--primary-subtle);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .pagination-btn.active {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
 }
 
 .pagination-btn:disabled {
@@ -247,13 +252,13 @@ a:hover {
   justify-content: center;
   width: 36px;
   height: 36px;
-  color: var(--color-gray-400);
+  color: var(--text-muted);
   font-size: var(--font-size-sm);
 }
 
 /* Skeleton Loader */
 .skeleton {
-  background: linear-gradient(90deg, var(--color-gray-100) 25%, var(--color-gray-200) 50%, var(--color-gray-100) 75%);
+  background: linear-gradient(90deg, var(--border) 25%, var(--card-hover) 50%, var(--border) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite;
   border-radius: var(--radius-md);
@@ -268,37 +273,41 @@ a:hover {
 .form-input {
   width: 100%;
   padding: 0.625rem 0.875rem;
-  border: 1.5px solid var(--color-gray-300);
+  border: 1.5px solid var(--input-border);
   border-radius: var(--radius-md);
   font-size: var(--font-size-base);
   font-family: var(--font-family);
-  color: var(--color-gray-800);
-  background: var(--bg-card);
+  color: var(--input-text);
+  background: var(--input-bg);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   outline: none;
 }
 
+.form-input::placeholder {
+  color: var(--input-placeholder);
+}
+
 .form-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.12);
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 3px var(--primary-subtle);
 }
 
 .form-input:disabled {
-  background-color: var(--color-gray-50);
-  color: var(--color-gray-400);
+  background-color: var(--border-subtle);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
 .form-input.error {
-  border-color: var(--color-danger);
-  box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
 .form-error {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--color-danger-text);
+  color: var(--danger);
   font-size: var(--font-size-xs);
   margin-top: var(--spacing-1);
 }
@@ -322,21 +331,21 @@ a:hover {
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgb(37 99 235 / 0.3);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .btn-primary:disabled {
@@ -347,32 +356,33 @@ a:hover {
 
 .btn-outline {
   background: transparent;
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 .btn-outline:hover:not(:disabled) {
-  background-color: var(--color-primary-subtle);
+  background-color: var(--primary-subtle);
 }
 
 .btn-danger {
-  background-color: var(--color-danger);
-  color: white;
-  border-color: var(--color-danger);
+  background-color: var(--danger);
+  color: #ffffff;
+  border-color: var(--danger);
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: #b91c1c;
+  opacity: 0.9;
 }
 
 .btn-ghost {
   background: transparent;
-  color: var(--color-gray-600);
+  color: var(--text-secondary);
   border-color: transparent;
 }
 
 .btn-ghost:hover {
-  background-color: var(--color-gray-100);
+  background-color: var(--card-hover);
+  color: var(--text-primary);
 }
 
 .btn-sm {
@@ -406,17 +416,17 @@ a:hover {
 
 /* Card */
 .card {
-  background: var(--bg-card);
+  background: var(--card);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
 }
 
 /* Section Heading */
 .section-heading {
   font-size: var(--font-size-xl);
   font-weight: 700;
-  color: var(--color-gray-800);
+  color: var(--text-primary);
   margin-bottom: var(--spacing-4);
   display: flex;
   align-items: center;
@@ -431,7 +441,7 @@ a:hover {
   justify-content: center;
   padding: var(--spacing-12) var(--spacing-8);
   text-align: center;
-  color: var(--color-gray-400);
+  color: var(--text-muted);
 }
 
 .empty-state svg {
@@ -483,13 +493,15 @@ a:hover {
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  background-color: var(--background);
 }
 
 .admin-sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: var(--bg-sidebar);
+  background: var(--surface);
   box-shadow: var(--shadow-lg);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -501,13 +513,14 @@ a:hover {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--bg-page);
+  background: var(--background);
 }
 
 .admin-content {
   flex: 1;
   overflow-y: auto;
   padding: var(--spacing-6);
+  background-color: var(--background);
 }
 
 @media (max-width: 1024px) {
@@ -522,16 +535,16 @@ a:hover {
 
 /* Chart Container */
 .chart-card {
-  background: var(--bg-card);
+  background: var(--card);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   padding: var(--spacing-6);
 }
 
 .chart-title {
   font-size: var(--font-size-base);
   font-weight: 700;
-  color: var(--color-gray-800);
+  color: var(--text-primary);
   margin-bottom: var(--spacing-4);
 }

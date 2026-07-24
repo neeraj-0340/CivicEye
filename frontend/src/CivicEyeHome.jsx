@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "./assets/celogofull.png";
+import ThemeToggle from "./components/ThemeToggle";
 
 export const CivicEyeHome = () => {
   const scrollToBottom = () => {
@@ -11,38 +12,25 @@ export const CivicEyeHome = () => {
   };
 
   return (
-    <div className="bg-gray-50">
+    <div style={{ background: 'var(--background)', minHeight: '100vh', color: 'var(--text-primary)' }}>
       {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
+      <header className="shadow-md sticky top-0 z-50" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
         <div className="flex items-center justify-between py-4 px-6 gap-x-10">
           <img src={logo} alt="CivicEye Logo" className="h-6" />
-          {/* <h1 className="text-2xl font-bold text-blue-600">Civic<span className="text-black">EYE</span></h1> */}
-          <nav className="flex gap-6 text-gray-700">
-            {/* <a href="#" className="hover:text-blue-500">Home</a> */}
-            <a href="#" className="hover:text-blue-500">
+          <nav className="flex items-center gap-6" style={{ color: 'var(--text-secondary)' }}>
+            <Link to="/complaintlist" className="hover:text-blue-500">
               My Complaints
-            </a>
-            <Link to="/about">
-              <a href="#" className="hover:text-blue-500">
-                About
-              </a>
             </Link>
-            <button onClick={scrollToBottom}>
-              <a href="#" className="hover:text-blue-500">
-                Contact
-              </a>
+            <button onClick={scrollToBottom} className="hover:text-blue-500">
+              Contact
             </button>
+            <ThemeToggle />
             <Link to="/login">
-              <a href="#" className="text-blue-500 font-semibold">
+              <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-semibold">
                 Login
-              </a>
+              </button>
             </Link>
           </nav>
-          <Link to="/login">
-            <button className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
-              login
-            </button>
-          </Link>
         </div>
       </header>
 

@@ -91,8 +91,8 @@ export const CivicEyeUserManagement = () => {
       <div className="admin-main">
         {/* Header */}
         <div style={{
-          background: "white",
-          borderBottom: "1px solid var(--color-gray-200)",
+          background: "var(--surface)",
+          borderBottom: "1px solid var(--border)",
           padding: "1rem 1.5rem",
           display: "flex",
           alignItems: "center",
@@ -101,10 +101,10 @@ export const CivicEyeUserManagement = () => {
           gap: "0.75rem",
         }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "var(--color-gray-800)" }}>
+            <h1 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "var(--text-primary)" }}>
               User Management
             </h1>
-            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-gray-400)", marginTop: 2 }}>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-muted)", marginTop: 2 }}>
               {pagination.totalItems} total users
             </p>
           </div>
@@ -112,7 +112,7 @@ export const CivicEyeUserManagement = () => {
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <div style={{ position: "relative" }}>
               <FiSearch
-                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--color-gray-400)" }}
+                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
                 size={15}
               />
               <input

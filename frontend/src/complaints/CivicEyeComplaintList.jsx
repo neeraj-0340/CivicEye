@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import DataTable from '../components/DataTable';
 import StatusBadge from '../components/StatusBadge';
 import usePagination from '../hooks/usePagination';
+import ThemeToggle from '../components/ThemeToggle';
 
 export const CivicEyeComplaintList = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export const CivicEyeComplaintList = () => {
       key: 'type',
       label: 'Type',
       render: (val) => (
-        <span style={{ fontSize: '0.75rem', background: '#eff6ff', color: '#2563eb', padding: '2px 8px', borderRadius: 999, fontWeight: 500 }}>
+        <span style={{ fontSize: '0.75rem', background: 'var(--primary-subtle)', color: 'var(--primary)', padding: '2px 8px', borderRadius: 999, fontWeight: 500 }}>
           {val}
         </span>
       ),
@@ -58,7 +59,7 @@ export const CivicEyeComplaintList = () => {
       render: (_, row) => (
         <Link
           to={`/complaintdetail/${row._id}`}
-          style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.8rem' }}
+          style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.8rem' }}
         >
           View Details
         </Link>
@@ -68,13 +69,13 @@ export const CivicEyeComplaintList = () => {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-page)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--background)', color: 'var(--text-primary)' }}>
       <Toaster position="top-right" />
 
       {/* Minimal header */}
       <div style={{
-        background: 'white',
-        borderBottom: '1px solid var(--color-gray-200)',
+        background: 'var(--surface)',
+        borderBottom: '1px solid var(--border)',
         padding: '1rem 1.5rem',
         display: 'flex',
         alignItems: 'center',
@@ -88,15 +89,18 @@ export const CivicEyeComplaintList = () => {
           <FiArrowLeft size={16} /> Back to Home
         </button>
 
-        <Link to="/registercomplaint" className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-          <FiPlus size={15} /> New Complaint
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <ThemeToggle />
+          <Link to="/registercomplaint" className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+            <FiPlus size={15} /> New Complaint
+          </Link>
+        </div>
       </div>
 
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-          <FiFileText size={24} color="#2563eb" />
-          <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-gray-800)' }}>
+          <FiFileText size={24} color="var(--primary)" />
+          <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
             My Complaints
           </h1>
           {!loading && (

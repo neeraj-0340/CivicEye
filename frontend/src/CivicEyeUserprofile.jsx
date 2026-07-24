@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import api from "./api/config";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import ThemeToggle from "./components/ThemeToggle";
 
 export const CivicEyeUserprofile = () => {
   const [formData, setFormData] = useState({
@@ -86,18 +87,19 @@ export const CivicEyeUserprofile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div style={{ background: 'var(--background)', minHeight: '100vh', color: 'var(--text-primary)' }} className="py-12 px-4 sm:px-6 lg:px-8">
       <Toaster/>
-          <div>
-            <button 
-            onClick={()=>navigate(-1)}
-            className="px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded-lg hover:bg-gray-700"
-            >
-              Back
-            </button>
-          </div>
+      <div className="max-w-4xl mx-auto flex justify-between items-center mb-4">
+        <button 
+          onClick={()=>navigate(-1)}
+          className="btn btn-outline btn-sm"
+        >
+          ← Back
+        </button>
+        <ThemeToggle />
+      </div>
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+        <div className="card overflow-hidden" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-700 to-purple-600 p-6 sm:p-8">
             <div className="flex justify-between items-center">
@@ -122,7 +124,7 @@ export const CivicEyeUserprofile = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   {/* Full Name */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       Full Name
                     </label>
                     <input
@@ -131,18 +133,14 @@ export const CivicEyeUserprofile = () => {
                       value={formData.fullName}
                       onChange={handleChange}
                       placeholder="Enter your full name"
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>
 
                   {/* Date of Birth */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       Date of Birth
                     </label>
                     <input
@@ -150,18 +148,14 @@ export const CivicEyeUserprofile = () => {
                       name="dob"
                       value={formData.dob}
                       onChange={handleChange}
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>
 
                   {/* Mobile Number */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       Mobile Number
                     </label>
                     <input
@@ -170,18 +164,14 @@ export const CivicEyeUserprofile = () => {
                       value={formData.mobileNumber}
                       onChange={handleChange}
                       placeholder="Enter your mobile number"
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>
 
                   {/* Email */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       Email Address
                     </label>
                     <input
@@ -190,18 +180,14 @@ export const CivicEyeUserprofile = () => {
                       value={formData.emailId}
                       onChange={handleChange}
                       placeholder="Enter your email address"
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>
 
                   {/* ID Proof Number */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       ID Proof Number
                     </label>
                     <input
@@ -210,18 +196,14 @@ export const CivicEyeUserprofile = () => {
                       value={formData.idProofNumber}
                       onChange={handleChange}
                       placeholder="Enter your ID proof number"
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>
 
                   {/* State */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       State
                     </label>
                     <input
@@ -230,18 +212,14 @@ export const CivicEyeUserprofile = () => {
                       value={formData.state}
                       onChange={handleChange}
                       placeholder="Enter your state"
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>
 
                   {/* ID Proof Type */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       ID Proof Type
                     </label>
                     <input
@@ -250,18 +228,14 @@ export const CivicEyeUserprofile = () => {
                       value={formData.idProofType}
                       onChange={handleChange}
                       placeholder="Enter your ID proof type"
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>
 
                   {/* Address */}
                   <div className="space-y-1 md:col-span-2">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                       Address
                     </label>
                     <textarea
@@ -270,11 +244,7 @@ export const CivicEyeUserprofile = () => {
                       onChange={handleChange}
                       placeholder="Enter your address"
                       rows="3"
-                      className={`w-full rounded-lg border ${
-                        isEditing
-                          ? "border-gray-300"
-                          : "border-gray-200 bg-gray-50"
-                      } px-4 py-2.5 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+                      className="form-input"
                       disabled={!isEditing}
                     />
                   </div>

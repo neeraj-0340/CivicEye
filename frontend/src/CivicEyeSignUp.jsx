@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "./assets/celogofull.png";
 import api from "./api/config";
 import toast, { Toaster } from "react-hot-toast";
+import ThemeToggle from "./components/ThemeToggle";
 
 export const CivicEyeSignUp = () => {
   const navigate = useNavigate();
@@ -46,21 +47,24 @@ export const CivicEyeSignUp = () => {
     }
   };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen relative" style={{ background: 'var(--background)', color: 'var(--text-primary)' }}>
       <Toaster position="top-right" />
-      <div className="bg-white shadow-md rounded-lg flex overflow-hidden">
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
+      <div className="shadow-md rounded-lg flex overflow-hidden border" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
         {/* Left Section */}
-        <div className="w-1/2 p-8 flex flex-col justify-center items-center border-r">
+        <div className="w-1/2 p-8 flex flex-col justify-center items-center border-r" style={{ borderColor: 'var(--border)' }}>
           <img src={logo} alt="CivicEye Logo" className="h-9" />
-          <p className="mt-4 text-gray-600 text-center">Welcome to CivicEye!</p>
-          <p className="text-gray-500 text-center mt-2">
+          <p className="mt-4 text-center" style={{ color: 'var(--text-secondary)' }}>Welcome to CivicEye!</p>
+          <p className="text-center mt-2" style={{ color: 'var(--text-muted)' }}>
             Your platform to report, track, and resolve public issues with ease.
           </p>
         </div>
 
         {/* Right Section */}
         <div className="w-1/2 p-8 flex flex-col justify-center">
-          <h2 className="text-2xl font-bold text-gray-700 text-center">
+          <h2 className="text-2xl font-bold text-center" style={{ color: 'var(--text-primary)' }}>
             SIGN <span className="text-blue-500">UP</span>
           </h2>
           <form className="mt-6" onSubmit={handlesubmit} noValidate>
@@ -70,7 +74,7 @@ export const CivicEyeSignUp = () => {
                 name="name"
                 onChange={handlechange}
                 placeholder="Full Name"
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.name ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.name ? 'error' : ''}`}
                 disabled={submitting}
               />
               {errors.name && <p className="form-error">{errors.name}</p>}
@@ -81,7 +85,7 @@ export const CivicEyeSignUp = () => {
                 name="mobile"
                 onChange={handlechange}
                 placeholder="Mobile Number"
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.mobile ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.mobile ? 'error' : ''}`}
                 disabled={submitting}
               />
               {errors.mobile && <p className="form-error">{errors.mobile}</p>}
@@ -92,7 +96,7 @@ export const CivicEyeSignUp = () => {
                 name="age"
                 onChange={handlechange}
                 placeholder="Date of Birth"
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.age ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.age ? 'error' : ''}`}
                 disabled={submitting}
               />
               {errors.age && <p className="form-error">{errors.age}</p>}
@@ -103,7 +107,7 @@ export const CivicEyeSignUp = () => {
                 name="email"
                 onChange={handlechange}
                 placeholder="Email"
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.email ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.email ? 'error' : ''}`}
                 disabled={submitting}
               />
               {errors.email && <p className="form-error">{errors.email}</p>}
@@ -114,7 +118,7 @@ export const CivicEyeSignUp = () => {
                 name="password"
                 onChange={handlechange}
                 placeholder="Password (min 6 characters)"
-                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.password ? 'border-red-400' : ''}`}
+                className={`form-input ${errors.password ? 'error' : ''}`}
                 disabled={submitting}
               />
               {errors.password && <p className="form-error">{errors.password}</p>}
@@ -122,13 +126,13 @@ export const CivicEyeSignUp = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-blue-500 text-white py-2 rounded-md mt-4 hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn btn-primary btn-block mt-4"
             >
               {submitting && <span className="spinner" style={{ borderTopColor: 'white' }} />}
               {submitting ? 'Creating Account…' : 'SIGN UP'}
             </button>
           </form>
-          <p className="text-center text-gray-600 mt-4">
+          <p className="text-center mt-4" style={{ color: 'var(--text-secondary)' }}>
             Already have an account?{' '}
             <Link to="/login" className="text-blue-500 font-semibold hover:underline">
               Sign in

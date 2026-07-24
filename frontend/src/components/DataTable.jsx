@@ -87,7 +87,7 @@ const DataTable = React.memo(({
       {/* Footer / pagination */}
       {!loading && !error && data.length > 0 && pagination && (
         <div style={{
-          borderTop: '1px solid var(--color-gray-200)',
+          borderTop: '1px solid var(--border)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -95,7 +95,7 @@ const DataTable = React.memo(({
           flexWrap: 'wrap',
           gap: '0.5rem',
         }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--color-gray-400)' }}>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
             Page {pagination.currentPage} of {pagination.totalPages}
             {pagination.totalItems !== undefined && ` · ${pagination.totalItems} total`}
           </span>
@@ -108,7 +108,7 @@ const DataTable = React.memo(({
       )}
 
       {footer && (
-        <div style={{ borderTop: '1px solid var(--color-gray-200)', padding: '0.75rem 1rem' }}>
+        <div style={{ borderTop: '1px solid var(--border)', padding: '0.75rem 1rem' }}>
           {footer}
         </div>
       )}
