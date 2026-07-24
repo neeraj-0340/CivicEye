@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "./styles/global.css";
 import "./index.css";
 // import App from "./App.jsx";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -21,10 +22,12 @@ import { AdminFeedbackDetails } from "./admin/AdminFeedbackDetails.jsx";
 import { CivicEyeOverview } from "./admin/CivicEyeOverview.jsx";
 import DemoApp from "./Demo.jsx";
 import { TodoApp } from "./Todo.jsx";
+import { UserProvider } from "./contexts/UserContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
+    <UserProvider>
+      <BrowserRouter>
       <Routes>
         {/* <Route path="/app" element={<App/>}></Route> */}
         <Route path="/" element={<Navigate to="/userhome"/>}></Route>
@@ -51,7 +54,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/demo" element={<DemoApp/>}></Route>
         <Route path="/todo" element={<TodoApp/>}></Route>
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </UserProvider>
   </StrictMode>
 );
 

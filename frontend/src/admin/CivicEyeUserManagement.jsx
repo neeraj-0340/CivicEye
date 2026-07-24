@@ -1,172 +1,159 @@
-import React, { useEffect, useState } from "react";
-import logo from "../assets/celogofull.png"; // Adjust the path to your logo
-import api from "../api/config";
-import { Link, useNavigate } from "react-router-dom";
-import { FiBarChart2, FiBell, FiUsers, FiFileText, FiLogOut } from "react-icons/fi";
+import React, { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { FiSearch, FiRefreshCw } from "react-icons/fi";
+import { Toaster } from "react-hot-toast";
+import AdminSidebar from "../components/AdminSidebar";
+import DataTable from "../components/DataTable";
+import usePagination from "../hooks/usePagination";
 
 export const CivicEyeUserManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [adminName, setAdminName] = useState("Admin Name");
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState("");
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get("/user/allusers");
+  const {
+    data: users,
+    loading,
+    error,
+    pagination,
+    goToPage,
+    updateFilters,
+    refresh,
+  } = usePagination("/user/allusers", {}, 1, 10);
 
-        const formattedUsers = response.data.map((user) => ({
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          phone: user.mobile,
-          address: user.address || "N/A",
-          idProof:
-            user.idProofType && user.idProofNumber
-              ? `${user.idProofType}: ${user.idProofNumber}`
-              : "N/A",
-          deleteState: user.deletestate || false, // Add deleteState, default to false if not present
-        }));
+  const handleSearch = useCallback(() => {
+    const filter = {};
+    if (searchInput.trim()) filter.search = searchInput.trim();
+    updateFilters(filter);
+  }, [searchInput, updateFilters]);
 
-        setUsers(formattedUsers);
-        setLoading(false);
-        console.log(formattedUsers);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        setError("Failed to fetch users");
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-
-    const storedAdminName = localStorage.getItem("name") || "Admin Name";
-    setAdminName(storedAdminName);
-  }, []);
-
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    navigate("/login"); // Adjust the route to your login page
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
   };
 
-  return (
-    <div className="flex h-screen w-full bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <img src={logo} alt="CivicEYE Logo" className="h-10" />
-        </div>
-        <div className="flex flex-col mt-4">
-          <Link to="/overview">
-            <div className="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
-              <FiBarChart2 className="mr-3 text-lg" />
-              <span>Overview</span>
-            </div>
-          </Link>
-          <Link to="/complaintmanagement">
-            <div className="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
-              <FiBell className="mr-3 text-lg" />
-              <span>Complaints</span>
-            </div>
-          </Link>
-          <div className="flex items-center px-6 py-3 bg-blue-50 text-blue-700 border-l-4 border-blue-500">
-            <FiUsers className="mr-3 text-lg" />
-            <span>User Management</span>
+  const columns = [
+    {
+      key: "name",
+      label: "Name",
+      render: (val, row) => (
+        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+          <div style={{
+            width: 32, height: 32,
+            borderRadius: "50%",
+            background: row.deletestate ? "#fee2e2" : "#eff6ff",
+            color: row.deletestate ? "#dc2626" : "#2563eb",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontWeight: 700, fontSize: "0.8rem", flexShrink: 0,
+          }}>
+            {(val || "U").charAt(0).toUpperCase()}
           </div>
-          <Link to="/feedbackmanagement">
-            <div className="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
-              <FiFileText className="mr-3 text-lg" />
-              <span>Feedback</span>
-            </div>
-          </Link>
+          <span style={{ fontWeight: 500, color: row.deletestate ? "#dc2626" : "var(--color-gray-800)" }}>
+            {val}
+          </span>
         </div>
-        <div className="mt-auto border-t border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="bg-blue-500 text-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
-                <span className="text-sm font-medium">{adminName.charAt(0)}</span>
-              </div>
-              <span className="text-gray-700 font-medium">{adminName}</span>
+      ),
+    },
+    { key: "email", label: "Email" },
+    { key: "mobile", label: "Phone", width: "130px" },
+    {
+      key: "address",
+      label: "Address",
+      render: (val) => val || "—",
+    },
+    {
+      key: "deletestate",
+      label: "Status",
+      render: (val) => val
+        ? <span className="badge badge-rejected">Banned</span>
+        : <span className="badge badge-resolved">Active</span>,
+      width: "90px",
+    },
+    {
+      key: "_id",
+      label: "Actions",
+      render: (_, row) => (
+        <button
+          className="btn btn-ghost btn-sm"
+          style={{ color: "var(--color-primary)", fontWeight: 600 }}
+          onClick={() => navigate(`/user/details/${row._id}`)}
+        >
+          View
+        </button>
+      ),
+      width: "80px",
+    },
+  ];
+
+  return (
+    <div className="admin-layout">
+      <Toaster position="top-right" />
+      <AdminSidebar />
+
+      <div className="admin-main">
+        {/* Header */}
+        <div style={{
+          background: "white",
+          borderBottom: "1px solid var(--color-gray-200)",
+          padding: "1rem 1.5rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "0.75rem",
+        }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "var(--color-gray-800)" }}>
+              User Management
+            </h1>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-gray-400)", marginTop: 2 }}>
+              {pagination.totalItems} total users
+            </p>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <div style={{ position: "relative" }}>
+              <FiSearch
+                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--color-gray-400)" }}
+                size={15}
+              />
+              <input
+                type="text"
+                placeholder="Search users…"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="form-input"
+                style={{ paddingLeft: 32, width: 200, height: 36 }}
+              />
             </div>
+            <button className="btn btn-primary btn-sm" onClick={handleSearch}>
+              Search
+            </button>
             <button
-              onClick={handleLogout}
-              className="text-gray-500 hover:text-red-500 transition-colors"
-              title="Logout"
+              className="btn btn-ghost btn-sm"
+              onClick={() => { setSearchInput(""); updateFilters({}); }}
+              title="Clear search"
             >
-              <FiLogOut className="text-lg" />
+              <FiRefreshCw size={14} />
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <div className="bg-white border-b border-gray-200 p-4">
-          <h1 className="text-xl font-medium">User Management</h1>
-        </div>
-        <div className="flex-1 p-6 overflow-auto">
-          <div className="bg-white rounded-lg shadow">
-            {loading && (
-              <div className="p-8 text-center">
-                <p>Loading users data...</p>
-              </div>
-            )}
-            {error && (
-              <div className="p-8 text-center text-red-500">
-                <p>{error}</p>
-              </div>
-            )}
-            {!loading && !error && users.length === 0 && (
-              <div className="p-8 text-center text-gray-500">
-                <p>No users found.</p>
-              </div>
-            )}
-            {!loading && !error && users.length > 0 && (
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="text-left p-4 font-medium text-gray-700">Name</th>
-                    <th className="text-left p-4 font-medium text-gray-700">Email</th>
-                    <th className="text-left p-4 font-medium text-gray-700">Phone</th>
-                    <th className="text-left p-4 font-medium text-gray-700">Address</th>
-                    <th className="text-left p-4 font-medium text-gray-700">ID Proof</th>
-                    <th className="text-left p-4 font-medium text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <tr
-                      key={user.id}
-                      className={`border-b border-gray-200 hover:bg-gray-50 ${
-                        user.deleteState ? "bg-red-100 text-red-500" : "text-gray-900"
-                      }`}
-                    >
-                      <td className="p-4">{user.name}</td>
-                      <td className="p-4">{user.email}</td>
-                      <td className="p-4">{user.phone}</td>
-                      <td className="p-4">{user.address}</td>
-                      <td className="p-4">{user.idProof}</td>
-                      <td className="p-4">
-                        <button
-                          onClick={() => {
-                            navigate(`/user/details/${user.id}`);
-                            console.log("Navigating to:", `/user/details/${user.id}`);
-                          }}
-                          className="text-blue-600 hover:text-blue-800 underline"
-                        >
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+        <div className="admin-content">
+          <DataTable
+            columns={columns}
+            data={users}
+            loading={loading}
+            error={error}
+            emptyTitle="No users found"
+            emptyDescription={searchInput ? "Try a different search term." : "No users have registered yet."}
+            onRetry={refresh}
+            pagination={{
+              currentPage: pagination.currentPage,
+              totalPages: pagination.totalPages,
+              totalItems: pagination.totalItems,
+              onPageChange: goToPage,
+            }}
+          />
         </div>
       </div>
     </div>

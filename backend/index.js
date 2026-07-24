@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import UserRouter from "./routes/Userrouter.js";
 import ComplaintRouter from "./routes/Complaintrouter.js";
 import feedbackrouter from "./routes/Feedbackrouter.js";
+import StatsRouter from "./routes/Statsrouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -67,6 +68,7 @@ app.get('/health', (req, res) => {
 app.use("/user", UserRouter);
 app.use("/complaint", ComplaintRouter);
 app.use("/feedback", feedbackrouter);
+app.use("/stats", StatsRouter);
 app.use('/uploads', express.static(uploadsDir));
 
 // Global Error Handler

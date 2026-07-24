@@ -1,4 +1,5 @@
 import feedback from "../model/FeedbackSchema.js";
+import { getPagination, buildPaginationMeta } from '../utils/paginate.js';
 
 export const addFeedback = async (req, res) => {
     try {
@@ -25,7 +26,28 @@ export const addFeedback = async (req, res) => {
 
 export const getAllFeedback = async (req, res) => {
     try {
-        const feedbacks = await feedback.find().populate("userId", "name email");  // Populate user details
+        if (req.query.page || req.query.limit) {
+            const { search, status: statusFilter } = req.query;
+            const filter = {};
+            if (statusFilter && statusFilter !== 'all') filter.status = statusFilter;
+            if (search) {
+                filter.$or = [
+                    { description: { $regex: search, $options: 'i' } },
+                ];
+            }
+            const { page, limit, skip } = getPagination(req.query);
+            const [total, feedbacks] = await Promise.all([
+                feedback.countDocuments(filter),
+                feedback.find(filter).populate('userId', 'name email').sort({ timestamp: -1 }).skip(skip).limit(limit),
+            ]);
+            return res.status(200).json({
+                success: true,
+                data: feedbacks,
+                pagination: buildPaginationMeta(total, page, limit),
+            });
+        }
+        // Legacy
+        const feedbacks = await feedback.find().populate("userId", "name email");
         res.status(200).json(feedbacks);
     } catch (error) {
         console.error(error);

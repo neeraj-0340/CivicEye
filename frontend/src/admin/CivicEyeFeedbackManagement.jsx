@@ -1,268 +1,198 @@
-import React, { useEffect, useState } from "react";
-import logo from "../assets/celogofull.png";
-import api from "../api/config";
-import { Link, useNavigate } from "react-router-dom";
-import { FiBarChart2, FiBell, FiUsers, FiFileText, FiLogOut, FiSearch, FiRefreshCw } from "react-icons/fi";
-import { FaSpinner } from "react-icons/fa";
+import React, { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { FiSearch, FiRefreshCw } from "react-icons/fi";
+import { Toaster } from "react-hot-toast";
+import AdminSidebar from "../components/AdminSidebar";
+import DataTable from "../components/DataTable";
+import StatusBadge from "../components/StatusBadge";
+import usePagination from "../hooks/usePagination";
+
+const STATUS_TABS = ["all", "pending", "accepted", "rejected"];
 
 export const CivicEyeFeedbackManagement = () => {
-  const [feedbacks, setFeedbacks] = useState([]);
-  const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [adminName, setAdminName] = useState("Admin Name");
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("all");
+  const [searchInput, setSearchInput] = useState("");
 
-  useEffect(() => {
-    const fetchFeedbacks = async () => {
-      setLoading(true);
-      try {
-        const feedbackResponse = await api.get("/feedback/all");
-        console.log("Raw feedback response:", feedbackResponse.data);
-        const formattedFeedbacks = feedbackResponse.data.map((feedback) => ({
-          id: feedback._id,
-          userName: feedback.userId?.name || "Unknown",
-          description: feedback.description,
-          timestamp: new Date(feedback.timestamp).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }),
-          status: feedback.status,
-        }));
-        setFeedbacks(formattedFeedbacks);
-        setFilteredFeedbacks(formattedFeedbacks);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching feedbacks:", error);
-        setError("Failed to fetch feedback data");
-        setLoading(false);
-      }
-    };
+  const {
+    data: feedbacks,
+    loading,
+    error,
+    pagination,
+    goToPage,
+    updateFilters,
+    refresh,
+  } = usePagination("/feedback/all", {}, 1, 10);
 
-    fetchFeedbacks();
+  const handleSearch = useCallback(() => {
+    const filter = {};
+    if (activeTab !== "all") filter.status = activeTab;
+    if (searchInput.trim()) filter.search = searchInput.trim();
+    updateFilters(filter);
+  }, [activeTab, searchInput, updateFilters]);
 
-    const storedAdminName = localStorage.getItem("name") || "Admin Name";
-    setAdminName(storedAdminName);
-  }, []);
+  const handleTabChange = useCallback((tab) => {
+    setActiveTab(tab);
+    const filter = {};
+    if (tab !== "all") filter.status = tab;
+    if (searchInput.trim()) filter.search = searchInput.trim();
+    updateFilters(filter);
+  }, [searchInput, updateFilters]);
 
-  // Handle search
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    const filtered = feedbacks.filter(
-      (feedback) =>
-        feedback.userName.toLowerCase().includes(query) ||
-        feedback.description.toLowerCase().includes(query) ||
-        feedback.status.toLowerCase().includes(query)
-    );
-    setFilteredFeedbacks(filtered);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
   };
 
-  // Handle refresh
-  const handleRefresh = () => {
-    setSearchQuery("");
-    setFilteredFeedbacks(feedbacks);
-    // Optionally refetch data
-    const fetchFeedbacks = async () => {
-      setLoading(true);
-      try {
-        const feedbackResponse = await api.get("/feedback/all");
-        const formattedFeedbacks = feedbackResponse.data.map((feedback) => ({
-          id: feedback._id,
-          userName: feedback.userId?.name || "Unknown",
-          description: feedback.description,
-          timestamp: new Date(feedback.timestamp).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }),
-          status: feedback.status,
-        }));
-        setFeedbacks(formattedFeedbacks);
-        setFilteredFeedbacks(formattedFeedbacks);
-        setLoading(false);
-      } catch (error) {
-        setError("Failed to fetch feedback data");
-        setLoading(false);
-      }
-    };
-    fetchFeedbacks();
-  };
-
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    navigate("/login"); // Adjust the route to your login page
-  };
-
-  // Status badge styling
-  const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "accepted":
-        return "bg-green-100 text-green-800";
-      case "rejected":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+  const columns = [
+    {
+      key: "userId",
+      label: "User",
+      render: (val) => val?.name || "Unknown",
+      width: "130px",
+    },
+    {
+      key: "description",
+      label: "Feedback",
+      render: (val) => (
+        <span style={{ display: "block", maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {val}
+        </span>
+      ),
+    },
+    {
+      key: "timestamp",
+      label: "Date",
+      render: (val) =>
+        new Date(val).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+      width: "120px",
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (val) => <StatusBadge status={val} />,
+      width: "110px",
+    },
+    {
+      key: "_id",
+      label: "Actions",
+      render: (_, row) => (
+        <button
+          className="btn btn-ghost btn-sm"
+          style={{ color: "var(--color-primary)", fontWeight: 600 }}
+          onClick={() => navigate(`/adminfeedbackdetails/${row._id}`)}
+        >
+          View
+        </button>
+      ),
+      width: "80px",
+    },
+  ];
 
   return (
-    <div className="flex h-screen w-full bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg flex flex-col">
-        <div className="p-6 border-b border-gray-200">
-          <img src={logo} alt="CivicEYE Logo" className="h-10" />
-        </div>
-        <div className="flex flex-col mt-4">
-          <Link to="/overview">
-            <div className="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
-              <FiBarChart2 className="mr-3 text-lg" />
-              <span>Overview</span>
-            </div>
-          </Link>
-          <Link to="/complaintmanagement">
-            <div className="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
-              <FiBell className="mr-3 text-lg" />
-              <span>Complaints</span>
-            </div>
-          </Link>
-          <Link to="/usermanagement">
-            <div className="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors">
-              <FiUsers className="mr-3 text-lg" />
-              <span>User Management</span>
-            </div>
-          </Link>
-          <div className="flex items-center px-6 py-3 bg-blue-50 text-blue-700 border-l-4 border-blue-500">
-            <FiFileText className="mr-3 text-lg" />
-            <span>Feedback</span>
-          </div>
-        </div>
-        <div className="mt-auto border-t border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="bg-blue-500 text-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
-                <span className="text-sm font-medium">{adminName.charAt(0)}</span>
-              </div>
-              <span className="text-gray-700 font-medium">{adminName}</span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="text-gray-500 hover:text-red-500 transition-colors"
-              title="Logout"
-            >
-              <FiLogOut className="text-lg" />
-            </button>
-          </div>
-        </div>
-      </div>
+    <div className="admin-layout">
+      <Toaster position="top-right" />
+      <AdminSidebar />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="admin-main">
         {/* Header */}
-        <div className="bg-white shadow-sm border-b border-gray-200 p-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-gray-800">Feedback Management</h1>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <div style={{
+          background: "white",
+          borderBottom: "1px solid var(--color-gray-200)",
+          padding: "1rem 1.5rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "0.75rem",
+        }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "var(--color-gray-800)" }}>
+              Feedback Management
+            </h1>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--color-gray-400)", marginTop: 2 }}>
+              {pagination.totalItems} total feedback
+            </p>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <div style={{ position: "relative" }}>
+              <FiSearch
+                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--color-gray-400)" }}
+                size={15}
+              />
               <input
                 type="text"
-                placeholder="Search feedback..."
-                value={searchQuery}
-                onChange={handleSearch}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Search feedback…"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="form-input"
+                style={{ paddingLeft: 32, width: 200, height: 36 }}
               />
             </div>
+            <button className="btn btn-primary btn-sm" onClick={handleSearch}>Search</button>
             <button
-              onClick={handleRefresh}
-              className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              className="btn btn-ghost btn-sm"
+              onClick={() => { setSearchInput(""); setActiveTab("all"); updateFilters({}); }}
+              title="Reset filters"
             >
-              <FiRefreshCw className="mr-2" />
-              Refresh
+              <FiRefreshCw size={14} />
             </button>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-8 overflow-auto">
-          <div className="bg-white rounded-xl shadow-md">
-            {loading && (
-              <div className="p-12 text-center">
-                <FaSpinner className="animate-spin text-4xl text-blue-500 mx-auto" />
-                <p className="mt-4 text-gray-600">Loading feedback data...</p>
-              </div>
-            )}
-            {error && (
-              <div className="p-12 text-center bg-red-50 rounded-lg">
-                <p className="text-red-600 font-medium">{error}</p>
-                <button
-                  onClick={handleRefresh}
-                  className="mt-4 text-blue-600 hover:underline"
-                >
-                  Try Again
-                </button>
-              </div>
-            )}
-            {!loading && !error && filteredFeedbacks.length === 0 && (
-              <div className="p-12 text-center text-gray-500">
-                <p>No feedback found.</p>
-              </div>
-            )}
-            {!loading && !error && filteredFeedbacks.length > 0 && (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50 text-gray-700">
-                      <th className="text-left p-4 font-semibold">User Name</th>
-                      <th className="text-left p-4 font-semibold">Description</th>
-                      <th className="text-left p-4 font-semibold">Date</th>
-                      <th className="text-left p-4 font-semibold">Status</th>
-                      <th className="text-left p-4 font-semibold">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredFeedbacks.map((feedback) => (
-                      <tr
-                        key={feedback.id}
-                        className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                      >
-                        <td className="p-4 text-gray-800">{feedback.userName}</td>
-                        <td className="p-4 text-gray-600">{feedback.description}</td>
-                        <td className="p-4 text-gray-600">{feedback.timestamp}</td>
-                        <td className="p-4">
-                          <span
-                            className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(
-                              feedback.status
-                            )}`}
-                          >
-                            {feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1)}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <button
-                            onClick={() => {
-                              navigate(`/adminfeedbackdetails/${feedback.id}`);
-                              console.log("Navigating to:", `/feedback/details/${feedback.id}`);
-                            }}
-                            className="text-blue-600 hover:text-blue-800 underline font-medium"
-                          >
-                            View Details
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+        {/* Status Tabs */}
+        <div style={{
+          background: "white",
+          borderBottom: "1px solid var(--color-gray-200)",
+          padding: "0 1.5rem",
+          display: "flex",
+          gap: "0.25rem",
+          overflowX: "auto",
+        }}>
+          {STATUS_TABS.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => handleTabChange(tab)}
+              style={{
+                padding: "0.625rem 1rem",
+                background: "none",
+                border: "none",
+                borderBottom: activeTab === tab ? "2px solid var(--color-primary)" : "2px solid transparent",
+                color: activeTab === tab ? "var(--color-primary)" : "var(--color-gray-500)",
+                fontWeight: activeTab === tab ? 600 : 400,
+                fontSize: "0.875rem",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                textTransform: "capitalize",
+                transition: "all 0.15s ease",
+              }}
+            >
+              {tab === "all" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        <div className="admin-content">
+          <DataTable
+            columns={columns}
+            data={feedbacks}
+            loading={loading}
+            error={error}
+            emptyTitle="No feedback found"
+            emptyDescription={searchInput ? "Try a different search term." : "No feedback submitted yet."}
+            onRetry={refresh}
+            pagination={{
+              currentPage: pagination.currentPage,
+              totalPages: pagination.totalPages,
+              totalItems: pagination.totalItems,
+              onPageChange: goToPage,
+            }}
+          />
         </div>
       </div>
     </div>
   );
 };
+
+export default CivicEyeFeedbackManagement;

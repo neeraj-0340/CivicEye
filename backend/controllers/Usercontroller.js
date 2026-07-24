@@ -3,6 +3,7 @@ import user from "../model/UserSchema.js";
 import bcrypt from "bcryptjs";
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
+import { getPagination, buildPaginationMeta } from '../utils/paginate.js';
 
 
 export async function register(req, res) {
@@ -178,7 +179,29 @@ export async function viewUserProfile(req, res) {
 
 export async function getAllUsers(req, res) {
   try {
-    const users = await user.find({ role: { $ne: "admin" } }).select("-password"); // Exclude password field for security
+    // Paginated when ?page or ?limit is provided, legacy otherwise
+    if (req.query.page || req.query.limit) {
+      const { search } = req.query;
+      const filter = { role: { $ne: 'admin' } };
+      if (search) {
+        filter.$or = [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+        ];
+      }
+      const { page, limit, skip } = getPagination(req.query);
+      const [total, users] = await Promise.all([
+        user.countDocuments(filter),
+        user.find(filter).select('-password').skip(skip).limit(limit),
+      ]);
+      return res.status(200).json({
+        success: true,
+        data: users,
+        pagination: buildPaginationMeta(total, page, limit),
+      });
+    }
+    // Legacy – plain array
+    const users = await user.find({ role: { $ne: "admin" } }).select("-password");
     return res.status(200).json(users);
   } catch (error) {
     console.error("Error fetching users:", error);

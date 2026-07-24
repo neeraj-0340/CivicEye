@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import upload from '../multer.js';
 import fs from 'fs';
 import path from 'path';
+import { getPagination, buildPaginationMeta } from '../utils/paginate.js';
 
 export const uploadProof = upload.single('proof');
 
@@ -41,10 +42,21 @@ export async function registerComplaint(req, res) {
 export async function getUserComplaints(req, res) {
     try {
         const userId = req.user.userid;
-        
-        const complaints = await complaint.find({ userId })
-            .sort({ createdAt: -1 });
-        
+        // If ?page or ?limit provided, return paginated response; otherwise legacy array
+        if (req.query.page || req.query.limit) {
+            const { page, limit, skip } = getPagination(req.query);
+            const [total, complaints] = await Promise.all([
+                complaint.countDocuments({ userId }),
+                complaint.find({ userId }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            ]);
+            return res.status(200).json({
+                success: true,
+                data: complaints,
+                pagination: buildPaginationMeta(total, page, limit),
+            });
+        }
+        // Legacy behaviour – return plain array so existing frontend still works
+        const complaints = await complaint.find({ userId }).sort({ createdAt: -1 });
         return res.status(200).json(complaints);
     } catch (error) {
         console.error("Error fetching complaints:", error);
@@ -54,8 +66,31 @@ export async function getUserComplaints(req, res) {
 
 export async function getAllComplaints(req, res) {
     try {
+        // Paginated when ?page or ?limit present, legacy otherwise
+        if (req.query.page || req.query.limit) {
+            const { status, search } = req.query;
+            const filter = {};
+            if (status && status !== 'All') filter.status = status;
+            if (search) {
+                filter.$or = [
+                    { description: { $regex: search, $options: 'i' } },
+                    { location: { $regex: search, $options: 'i' } },
+                    { type: { $regex: search, $options: 'i' } },
+                ];
+            }
+            const { page, limit, skip } = getPagination(req.query);
+            const [total, complaints] = await Promise.all([
+                complaint.countDocuments(filter),
+                complaint.find(filter).populate('userId', 'name').sort({ createdAt: -1 }).skip(skip).limit(limit),
+            ]);
+            return res.status(200).json({
+                success: true,
+                data: complaints,
+                pagination: buildPaginationMeta(total, page, limit),
+            });
+        }
+        // Legacy
         const complaints = await complaint.find({}).populate('userId', 'name');
-        
         return res.status(200).json(complaints);
     } catch (error) {
         console.error("Error fetching complaints:", error);
