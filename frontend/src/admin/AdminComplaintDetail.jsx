@@ -139,8 +139,8 @@ export const AdminComplaintDetail = () => {
 
   if (!complaint) {
     return (
-      <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-        <p className="text-center text-gray-500">Complaint not found</p>
+      <div className="max-w-2xl mx-auto mt-10 p-6 card">
+        <p className="text-center" style={{ color: 'var(--text-muted)' }}>Complaint not found</p>
       </div>
     );
   }
@@ -157,10 +157,9 @@ export const AdminComplaintDetail = () => {
         { status: newStatus }
       );
 
-      // Update the complaint state with the new data
       setComplaint(response.data.complaint);
-      setError(''); // Clear any previous errors
-      toast.success("status updated succesfully");
+      setError('');
+      toast.success("Status updated successfully");
     } catch (error) {
       console.error("Error updating status:", error.response?.data || error.message);
       setError(
@@ -171,33 +170,34 @@ export const AdminComplaintDetail = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <Toaster/>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Complaint Details</h2>
-        <button
-          onClick={() => navigate(-1)}
-          className="text-white hover:bg-blue-800 rounded-2xl bg-blue-600 px-2 py-1"
-        >
-          Back to List
-        </button>
-      </div>
-
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Status</h3>
-          {getStatusBadge(complaint.status)}
+    <div style={{ background: 'var(--background)', minHeight: '100vh', padding: '2.5rem 1rem' }}>
+      <div className="max-w-2xl mx-auto p-6 card" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <Toaster/>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Complaint Details</h2>
+          <button
+            onClick={() => navigate(-1)}
+            className="btn btn-primary btn-sm"
+          >
+            Back to List
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <p className="text-sm text-gray-500">Created At</p>
-            <p className="font-medium">{complaint.createdAt}</p>
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Status</h3>
+            {getStatusBadge(complaint.status)}
           </div>
-          
-          {complaint.resolvedAt && (
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <p className="text-sm text-gray-500">Resolved At</p>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Created At</p>
+              <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{complaint.createdAt}</p>
+            </div>
+            
+            {complaint.resolvedAt && (
+              <div>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Resolved At</p>
               <p className="font-medium">{complaint.resolvedAt}</p>
             </div>
           )}
@@ -261,6 +261,7 @@ export const AdminComplaintDetail = () => {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 };

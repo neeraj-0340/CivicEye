@@ -108,85 +108,83 @@ export const UserDetails = () => {
 
   if (!user) {
     return (
-      <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-        <p className="text-center text-gray-500">User not found</p>
+      <div className="max-w-2xl mx-auto mt-10 p-6 card">
+        <p className="text-center" style={{ color: 'var(--text-muted)' }}>User not found</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <Toaster />
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">User Details</h2>
-        <button
-          onClick={() => navigate("/usermanagement")}
-          className="text-white hover:bg-blue-800 rounded-2xl bg-blue-600 px-2 py-1"
-        >
-          Back to User Management
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div>
-          <p className="text-sm text-gray-500">Name</p>
-          <p className="font-medium">{user.name}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Email</p>
-          <p className="font-medium">{user.email}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Phone</p>
-          <p className="font-medium">{user.mobile}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Address</p>
-          <p className="font-medium">{user.address || "N/A"}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">ID Proof</p>
-          <p className="font-medium">
-            {user.idProofType && user.idProofNumber
-              ? `${user.idProofType}: ${user.idProofNumber}`
-              : "N/A"}
-          </p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Role</p>
-          <p className="font-medium">{user.role}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Reports</p>
-          <p className="font-medium">{user.reports}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Status</p>
-          <p className="font-medium">
-            {user.deletestate ? "Banned" : "Active"}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-6 flex justify-end space-x-4">
-        {!user.deletestate && (
+    <div style={{ background: 'var(--background)', minHeight: '100vh', padding: '2.5rem 1rem' }}>
+      <div className="max-w-2xl mx-auto p-6 card" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <Toaster />
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>User Details</h2>
           <button
-            onClick={() => handleBan(user._id)}
-            disabled={deleting}
-            className="text-white hover:bg-red-800 rounded-2xl bg-red-600 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => navigate("/usermanagement")}
+            className="btn btn-primary btn-sm"
           >
-            {deleting ? "Banning..." : "Ban User"}
+            Back to User Management
           </button>
-        )}
-        {user.deletestate && (
-          <button
-            onClick={() => handleRestore(user._id)}
-            disabled={restoring}
-            className="text-white hover:bg-green-800 rounded-2xl bg-green-600 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {restoring ? "Restoring..." : "Restore User"}
-          </button>
-        )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Name</p>
+            <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{user.name}</p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Email</p>
+            <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{user.email}</p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Phone</p>
+            <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{user.mobile}</p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Address</p>
+            <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{user.address || "N/A"}</p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>ID Proof</p>
+            <p className="font-medium" style={{ color: 'var(--text-primary)' }}>
+              {user.idProofType && user.idProofNumber
+                ? `${user.idProofType}: ${user.idProofNumber}`
+                : "N/A"}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Role</p>
+            <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{user.role}</p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Status</p>
+            <p className="font-medium">
+              {user.deletestate ? <span className="badge badge-rejected">Banned</span> : <span className="badge badge-resolved">Active</span>}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-end space-x-4">
+          {!user.deletestate && (
+            <button
+              onClick={() => handleBan(user._id)}
+              disabled={deleting}
+              className="btn btn-danger btn-sm"
+            >
+              {deleting ? "Banning..." : "Ban User"}
+            </button>
+          )}
+          {user.deletestate && (
+            <button
+              onClick={() => handleRestore(user._id)}
+              disabled={restoring}
+              className="btn btn-primary btn-sm"
+            >
+              {restoring ? "Restoring..." : "Restore User"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

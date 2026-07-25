@@ -154,87 +154,89 @@ export const CivicEyeComplaintDetails = () => {
 
   if (!complaint) {
     return (
-      <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-        <p className="text-center text-gray-500">Complaint not found</p>
+      <div className="max-w-2xl mx-auto mt-10 p-6 card">
+        <p className="text-center" style={{ color: 'var(--text-muted)' }}>Complaint not found</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <Toaster />
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Complaint Details</h2>
-        <button
-          onClick={() => navigate(-1)}
-          className="text-white hover:bg-blue-800 rounded-2xl bg-blue-600 px-2 py-1"
-        >
-          Back to List
-        </button>
-      </div>
-
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Status</h3>
-          {getStatusBadge(complaint.status)}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <p className="text-sm text-gray-500">Created At</p>
-            <p className="font-medium">{complaint.createdAt}</p>
-          </div>
-          {complaint.resolvedAt && (
-            <div>
-              <p className="text-sm text-gray-500">Resolved At</p>
-              <p className="font-medium">{complaint.resolvedAt}</p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Complaint Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <p className="text-sm text-gray-500">Type</p>
-            <p className="font-medium">{complaint.type}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Location</p>
-            <p className="font-medium">{complaint.location}</p>
-          </div>
-        </div>
-        <div className="mb-4">
-          <p className="text-sm text-gray-500">Description</p>
-          <p className="mt-1">{complaint.description}</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-500">Proof/Reference</p>
-          {renderProofMedia()}
-        </div>
-      </div>
-
-      {complaint.status === 'Pending' && (
-        <div className="border-t pt-6 mt-6">
-          <p className="text-gray-600 italic">
-            Your complaint is currently under review. You'll be notified once there's an update.
-          </p>
-        </div>
-      )}
-
-      {/* Delete Button at Bottom */}
-      {complaint.status === 'Pending' && (
-        <div className="mt-6 flex justify-end">
+    <div style={{ background: 'var(--background)', minHeight: '100vh', padding: '2.5rem 1rem' }}>
+      <div className="max-w-2xl mx-auto p-6 card" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <Toaster />
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Complaint Details</h2>
           <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="text-white hover:bg-red-800 rounded-2xl bg-red-600 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => navigate(-1)}
+            className="btn btn-primary btn-sm"
           >
-            {deleting ? 'Deleting...' : 'Delete Complaint'}
+            Back to List
           </button>
         </div>
-      )}
+
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Status</h3>
+            {getStatusBadge(complaint.status)}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Created At</p>
+              <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{complaint.createdAt}</p>
+            </div>
+            {complaint.resolvedAt && (
+              <div>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Resolved At</p>
+                <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{complaint.resolvedAt}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Complaint Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Type</p>
+              <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{complaint.type}</p>
+            </div>
+            <div>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Location</p>
+              <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{complaint.location}</p>
+            </div>
+          </div>
+          <div className="mb-4">
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Description</p>
+            <p className="font-medium whitespace-pre-line mt-1" style={{ color: 'var(--text-primary)' }}>{complaint.description}</p>
+          </div>
+          <div>
+            <p className="text-sm mb-2" style={{ color: 'var(--text-muted)' }}>Proof/Reference</p>
+            {renderProofMedia()}
+          </div>
+        </div>
+
+        {complaint.status === 'Pending' && (
+          <div className="border-t pt-6 mt-6" style={{ borderColor: 'var(--border)' }}>
+            <p className="italic text-sm" style={{ color: 'var(--text-muted)' }}>
+              Your complaint is currently under review. You'll be notified once there's an update.
+            </p>
+          </div>
+        )}
+
+        {/* Delete Button at Bottom */}
+        {complaint.status === 'Pending' && (
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="btn btn-danger btn-sm"
+            >
+              {deleting ? 'Deleting...' : 'Delete Complaint'}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

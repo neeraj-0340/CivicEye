@@ -81,26 +81,25 @@ export const CivicEyeHome = () => {
       </section>
 
       {/* What We Do Section */}
-      <section className="bg-blue-100 py-12">
+      <section className="py-12" style={{ background: 'var(--surface)' }}>
         <div className="container mx-auto">
-          <h3 className="text-center text-2xl font-semibold mb-8">
-            What we do
+          <h3 className="text-center text-2xl font-semibold mb-8" style={{ color: 'var(--text-primary)' }}>
+            What We Do
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <p>You Register the Complaint</p>
+            <div className="card p-6">
+              <p style={{ color: 'var(--text-primary)' }}>1. Register the Complaint</p>
             </div>
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <p>
-                Our Team Verifies the Complaint and Forwards it to the
-                authorities
+            <div className="card p-6">
+              <p style={{ color: 'var(--text-primary)' }}>
+                2. Verification & Forwarding to Authorities
               </p>
             </div>
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <p>The Responsible authorities review the complaint</p>
+            <div className="card p-6">
+              <p style={{ color: 'var(--text-primary)' }}>3. Authority Review</p>
             </div>
-            <div className="bg-white shadow-lg p-6 rounded-lg">
-              <p>Your Issue is resolved and the complaint is processed</p>
+            <div className="card p-6">
+              <p style={{ color: 'var(--text-primary)' }}>4. Resolution & Status Update</p>
             </div>
           </div>
         </div>
@@ -108,55 +107,51 @@ export const CivicEyeHome = () => {
 
       {/* Testimonials Section */}
       <section className="container mx-auto py-12">
-        <h3 className="text-center text-2xl font-semibold mb-8">
-          What our users have to say
+        <h3 className="text-center text-2xl font-semibold mb-8" style={{ color: 'var(--text-primary)' }}>
+          What Our Users Have to Say
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
-            <p>
-              "This is an awesome website. Simplifies the complaint registration
-              process. "
+          <div className="card p-6 text-center">
+            <p style={{ color: 'var(--text-secondary)' }}>
+              "This platform makes reporting civic issues so fast and transparent."
             </p>
-            <p className="mt-2 font-semibold">- Jason</p>
+            <p className="mt-2 font-semibold" style={{ color: 'var(--text-primary)' }}>- Resident User</p>
           </div>
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
-            <p>
-              "This is an awesome website. Simplifies the complaint registration
-              process."
+          <div className="card p-6 text-center">
+            <p style={{ color: 'var(--text-secondary)' }}>
+              "Real-time status updates helped track our community complaint to resolution."
             </p>
-            <p className="mt-2 font-semibold">- Jason</p>
+            <p className="mt-2 font-semibold" style={{ color: 'var(--text-primary)' }}>- Local Citizen</p>
           </div>
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
+          <div className="card p-6 text-center">
             <input
               type="text"
               placeholder="Write your feedback"
-              className="w-full border rounded-lg p-2"
+              className="form-input mb-3"
             />
-            <button className="bg-blue-500 text-white mt-2 px-6 py-2 rounded-lg hover:bg-blue-600">
-              Submit
-            </button>
+            <Link to="/login" className="btn btn-primary btn-block">
+              Submit Feedback
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="bg-gray-100 py-12">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
-            <h4 className="text-xl font-semibold mb-4">Support Mail</h4>
-            <p>
-              For any assistance or inquiries about reporting issues using Civic
-              Eye, find us at:
+      <section className="py-12" style={{ background: 'var(--surface)' }}>
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-6">
+          <div className="card p-6 text-center">
+            <h4 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Support Email</h4>
+            <p style={{ color: 'var(--text-secondary)' }}>
+              For assistance or inquiries about reporting issues using CivicEye:
             </p>
             <p className="mt-2 font-semibold text-blue-500">
               support@civiceye.com
             </p>
           </div>
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
-            <h4 className="text-xl font-semibold mb-4">Make A Call</h4>
-            <p>
-              Need immediate assistance or want to report an urgent issue? Give
-              us a call:
+          <div className="card p-6 text-center">
+            <h4 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Make A Call</h4>
+            <p style={{ color: 'var(--text-secondary)' }}>
+              Need immediate assistance or want to report an urgent issue? Give us a call:
             </p>
             <p className="mt-2 font-semibold text-blue-500">+123 456 7890</p>
           </div>
@@ -164,34 +159,27 @@ export const CivicEyeHome = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-gray-300 py-8">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <footer style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', color: 'var(--text-secondary)' }} className="py-8">
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center px-6">
           <div>
-            <h5 className="text-lg font-semibold text-white mb-4">
-              Phone Numbers
+            <h5 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+              Support Line
             </h5>
             <p>(123) 456-7890</p>
             <p>(987) 654-3210</p>
           </div>
           <div>
-            <h5 className="text-lg font-semibold text-white mb-4">
+            <h5 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
               Contact Info
             </h5>
             <p>Email: support@civiceye.com</p>
-            <p>Phone: (123) 456-7890</p>
           </div>
           <div>
-            <h5 className="text-lg font-semibold text-white mb-4">
-              Quick Links
+            <h5 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+              CivicEye Platform
             </h5>
-            <p>Home</p>
-            <p>Complaints</p>
-            <p>Register</p>
-            <p>Login</p>
+            <p>© CivicEye 2025 | Empowering Citizens</p>
           </div>
-        </div>
-        <div className="text-center mt-6 text-sm">
-          © CivicEye 2025 | Empowering Citizens, Improving Communities
         </div>
       </footer>
     </div>
