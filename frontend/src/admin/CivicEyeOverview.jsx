@@ -357,8 +357,8 @@ export const CivicEyeOverview = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(520px, 1fr))', gap: '1rem' }}>
             {/* Recent Complaints */}
             <div className="card" style={{ overflow: 'hidden' }}>
-              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--color-gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--color-gray-800)' }}>Recent Complaints</span>
+              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>Recent Complaints</span>
                 <button className="btn btn-ghost btn-sm" onClick={() => navigate('/complaintmanagement')}>View all</button>
               </div>
               <div className="table-wrapper" style={{ border: 'none', borderRadius: 0 }}>

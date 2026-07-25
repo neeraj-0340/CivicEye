@@ -39,14 +39,14 @@ export const CivicEyeUserManagement = () => {
           <div style={{
             width: 32, height: 32,
             borderRadius: "50%",
-            background: row.deletestate ? "#fee2e2" : "#eff6ff",
-            color: row.deletestate ? "#dc2626" : "#2563eb",
+            background: row.deletestate ? "var(--danger-bg)" : "var(--primary-subtle)",
+            color: row.deletestate ? "var(--danger-text)" : "var(--primary)",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontWeight: 700, fontSize: "0.8rem", flexShrink: 0,
           }}>
             {(val || "U").charAt(0).toUpperCase()}
           </div>
-          <span style={{ fontWeight: 500, color: row.deletestate ? "#dc2626" : "var(--color-gray-800)" }}>
+          <span style={{ fontWeight: 500, color: row.deletestate ? "var(--danger-text)" : "var(--text-primary)" }}>
             {val}
           </span>
         </div>
