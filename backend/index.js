@@ -31,33 +31,55 @@ app.use(helmet({
 // Express body parsers (urlencoded) – placed before CORS
 app.use(express.urlencoded({ extended: true }));
 
-// Dynamic CORS configuration
-const allowedOrigins = [
-    process.env.CLIENT_URL || process.env.FRONTEND_URL,
+// Parse allowed origins from environment variables (supporting comma-separated lists)
+const parseOrigins = (envVar) => envVar ? envVar.split(',').map(url => url.trim()).filter(Boolean) : [];
+
+const envOrigins = [
+    ...parseOrigins(process.env.CLIENT_URL),
+    ...parseOrigins(process.env.FRONTEND_URL),
+    ...parseOrigins(process.env.ALLOWED_ORIGINS)
+];
+
+const defaultOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
     'http://localhost:5001',
-    'http://localhost:5002'
-].filter(Boolean);
+    'http://localhost:5002',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:3000'
+];
+
+const allowedOrigins = Array.from(new Set([...envOrigins, ...defaultOrigins]));
 
 app.use(express.json());
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests without origin (e.g., server‑to‑server) and during development
-        if (!origin || process.env.NODE_ENV !== 'production') {
+        // Allow requests without origin (e.g., server-to-server, mobile apps, Postman)
+        if (!origin) {
             return callback(null, true);
         }
-        // Allow whitelisted origins
+
+        // Allow any Vercel domain (*.vercel.app) for preview branch builds and production deployments
+        if (origin.endsWith('.vercel.app') || /\.vercel\.app$/i.test(origin)) {
+            return callback(null, true);
+        }
+
+        // Allow explicitly whitelisted origins
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
-        // Reject everything else
-        return callback(new Error('CORS policy violation: origin not allowed'));
-    },
-    credentials: true // keep true for JWT cookie usage if any
-}));
 
-// express.json moved above cors
+        // Allow all origins during development
+        if (process.env.NODE_ENV !== 'production') {
+            return callback(null, true);
+        }
+
+        // Gracefully disallow origins without throwing an Express 500 error on preflight
+        return callback(null, false);
+    },
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
 
 // Health Check Endpoint for deployment verification
 app.get('/health', (req, res) => {
