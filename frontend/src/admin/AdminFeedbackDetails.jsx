@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/config";
 import toast, { Toaster } from "react-hot-toast";
-import AdminSidebar from "../components/AdminSidebar";
+import AdminSidebar, { AdminMobileHeader } from "../components/AdminSidebar";
 
 export const AdminFeedbackDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [feedback, setFeedback] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,9 +47,11 @@ export const AdminFeedbackDetails = () => {
   return (
     <div className="admin-layout">
       <Toaster position="top-right" />
-      <AdminSidebar />
+      <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="admin-main">
+        <AdminMobileHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} title="Feedback Details" />
+
         {/* Header */}
         <div style={{
           background: "var(--surface)",
@@ -129,7 +132,7 @@ export const AdminFeedbackDetails = () => {
                 </p>
               </div>
 
-              <div className="border-t mt-6 pt-6 flex gap-4" style={{ borderColor: 'var(--border)' }}>
+              <div className="border-t mt-6 pt-6 flex flex-col sm:flex-row gap-3" style={{ borderColor: 'var(--border)' }}>
                 <button
                   onClick={() => handleStatusUpdate('accepted')}
                   className="btn btn-primary btn-sm"

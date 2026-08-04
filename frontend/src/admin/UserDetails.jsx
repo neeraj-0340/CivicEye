@@ -118,7 +118,7 @@ export const UserDetails = () => {
     <div style={{ background: 'var(--background)', minHeight: '100vh', padding: '2.5rem 1rem' }}>
       <div className="max-w-2xl mx-auto p-6 card" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
         <Toaster />
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>User Details</h2>
           <button
             onClick={() => navigate("/usermanagement")}

@@ -53,25 +53,25 @@ export const CivicEyeLoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen relative" style={{ background: 'var(--background)', color: 'var(--text-primary)' }}>
+    <div className="flex items-center justify-center min-h-screen relative p-4" style={{ background: 'var(--background)', color: 'var(--text-primary)' }}>
       <Toaster position="top-right" />
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
-      <div className="shadow-md rounded-lg flex w-3/4 max-w-4xl overflow-hidden border" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+      <div className="shadow-md rounded-lg flex flex-col md:flex-row w-full max-w-4xl overflow-hidden border" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
         {/* Left Section */}
-        <div className="p-8 flex flex-col justify-center items-center border-r" style={{ borderColor: 'var(--border)' }}>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+        <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center items-center border-b md:border-b-0 md:border-r" style={{ borderColor: 'var(--border)' }}>
+          <h1 className="text-3xl font-bold text-center" style={{ color: 'var(--text-primary)' }}>
             Civic<span className="text-blue-500">EYE</span>
           </h1>
           <p className="mt-4 text-center" style={{ color: 'var(--text-secondary)' }}>Welcome to CivicEye!</p>
-          <p className="text-center mt-2" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-center mt-2 text-sm" style={{ color: 'var(--text-muted)' }}>
             Your platform to report, track, and resolve public issues with ease.
           </p>
         </div>
 
         {/* Right Section */}
-        <div className="w-1/2 p-8 flex flex-col justify-center">
+        <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
           <h2 className="text-2xl font-bold text-center" style={{ color: 'var(--text-primary)' }}>
             SIGN <span className="text-blue-500">IN</span>
           </h2>
@@ -116,7 +116,7 @@ export const CivicEyeLoginPage = () => {
               {submitting ? 'Signing In…' : 'SIGN IN'}
             </button>
           </form>
-          <p className="text-center mt-4" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-center mt-4 text-sm" style={{ color: 'var(--text-secondary)' }}>
             Do not Have an Account?{' '}
             <Link to="/signup" className="text-blue-500 font-semibold hover:underline">
               Sign up

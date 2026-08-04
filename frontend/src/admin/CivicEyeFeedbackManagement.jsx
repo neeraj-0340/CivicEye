@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiSearch, FiRefreshCw } from "react-icons/fi";
 import { Toaster } from "react-hot-toast";
-import AdminSidebar from "../components/AdminSidebar";
+import AdminSidebar, { AdminMobileHeader } from "../components/AdminSidebar";
 import DataTable from "../components/DataTable";
 import StatusBadge from "../components/StatusBadge";
 import usePagination from "../hooks/usePagination";
@@ -11,6 +11,7 @@ const STATUS_TABS = ["all", "pending", "accepted", "rejected"];
 
 export const CivicEyeFeedbackManagement = () => {
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [searchInput, setSearchInput] = useState("");
 
@@ -91,9 +92,11 @@ export const CivicEyeFeedbackManagement = () => {
   return (
     <div className="admin-layout">
       <Toaster position="top-right" />
-      <AdminSidebar />
+      <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="admin-main">
+        <AdminMobileHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} title="Feedback" />
+
         {/* Header */}
         <div style={{
           background: "var(--surface)",
@@ -114,11 +117,11 @@ export const CivicEyeFeedbackManagement = () => {
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            <div style={{ position: "relative" }}>
+          <div className="mobile-filter-bar" style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <div style={{ position: "relative", flex: 1 }}>
               <FiSearch
-                style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
-                size={15}
+                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
+                size={16}
               />
               <input
                 type="text"
@@ -127,17 +130,19 @@ export const CivicEyeFeedbackManagement = () => {
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 className="form-input"
-                style={{ paddingLeft: 32, width: 200, height: 36 }}
+                style={{ paddingLeft: 36 }}
               />
             </div>
-            <button className="btn btn-primary btn-sm" onClick={handleSearch}>Search</button>
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={() => { setSearchInput(""); setActiveTab("all"); updateFilters({}); }}
-              title="Reset filters"
-            >
-              <FiRefreshCw size={14} />
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button className="btn btn-primary btn-sm min-h-[44px]" onClick={handleSearch}>Search</button>
+              <button
+                className="btn btn-ghost btn-sm min-h-[44px]"
+                onClick={() => { setSearchInput(""); setActiveTab("all"); updateFilters({}); }}
+                title="Reset filters"
+              >
+                <FiRefreshCw size={16} />
+              </button>
+            </div>
           </div>
         </div>
 

@@ -14,7 +14,7 @@ import StatCard from "../components/StatCard";
 import { SkeletonStatCard } from "../components/Skeleton";
 import EmptyState from "../components/EmptyState";
 import StatusBadge from "../components/StatusBadge";
-import AdminSidebar from "../components/AdminSidebar";
+import AdminSidebar, { AdminMobileHeader } from "../components/AdminSidebar";
 import { useTheme } from "../contexts/ThemeContext";
 
 const COMPLAINT_COLORS = ['#f59e0b', '#0891b2', '#16a34a', '#dc2626'];
@@ -70,6 +70,7 @@ export const CivicEyeOverview = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [complaintStats, setComplaintStats] = useState(null);
   const [feedbackStats, setFeedbackStats] = useState(null);
   const [recentFeedback, setRecentFeedback] = useState([]);
@@ -183,9 +184,11 @@ export const CivicEyeOverview = () => {
   return (
     <div className="admin-layout">
       <Toaster position="top-right" />
-      <AdminSidebar />
+      <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="admin-main">
+        <AdminMobileHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} title="Overview" />
+
         {/* Header */}
         <div style={{
           background: 'var(--surface)',
@@ -194,6 +197,8 @@ export const CivicEyeOverview = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '0.5rem',
         }}>
           <div>
             <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
@@ -263,14 +268,14 @@ export const CivicEyeOverview = () => {
               <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
                 Charts
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                 {/* Complaint Status Pie */}
-                <div className="chart-card">
+                <div className="chart-card col-span-1">
                   <p className="chart-title">Complaint Status Distribution</p>
                   {complaintStats?.totalComplaints > 0 ? (
                     <ResponsiveContainer width="100%" height={260}>
                       <PieChart>
-                        <Pie data={complaintStatusData} cx="50%" cy="50%" outerRadius={90}
+                        <Pie data={complaintStatusData} cx="50%" cy="50%" outerRadius={75}
                           dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                           labelLine={false}>
                           {complaintStatusData.map((_, i) => (
@@ -286,7 +291,7 @@ export const CivicEyeOverview = () => {
                           }}
                           formatter={(v) => [v, 'Complaints']}
                         />
-                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569' }} />
+                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569', fontSize: '0.8rem' }} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -295,12 +300,12 @@ export const CivicEyeOverview = () => {
                 </div>
 
                 {/* Feedback Status Pie */}
-                <div className="chart-card">
+                <div className="chart-card col-span-1">
                   <p className="chart-title">Feedback Status Distribution</p>
                   {totalFeedback > 0 ? (
                     <ResponsiveContainer width="100%" height={260}>
                       <PieChart>
-                        <Pie data={feedbackStatusData} cx="50%" cy="50%" outerRadius={90}
+                        <Pie data={feedbackStatusData} cx="50%" cy="50%" outerRadius={75}
                           dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                           labelLine={false}>
                           {feedbackStatusData.map((_, i) => (
@@ -315,7 +320,7 @@ export const CivicEyeOverview = () => {
                             borderRadius: '0.5rem',
                           }}
                         />
-                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569' }} />
+                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569', fontSize: '0.8rem' }} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -324,7 +329,7 @@ export const CivicEyeOverview = () => {
                 </div>
 
                 {/* Monthly Line Chart */}
-                <div className="chart-card" style={{ gridColumn: 'span 2' }}>
+                <div className="chart-card col-span-1 lg:col-span-2">
                   <p className="chart-title">Monthly Complaints (Last 12 Months)</p>
                   {hasMonthlyData ? (
                     <ResponsiveContainer width="100%" height={260}>
@@ -340,7 +345,7 @@ export const CivicEyeOverview = () => {
                             borderRadius: '0.5rem',
                           }}
                         />
-                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569' }} />
+                        <Legend wrapperStyle={{ color: isDark ? '#cbd5e1' : '#475569', fontSize: '0.8rem' }} />
                         <Line type="monotone" dataKey="count" stroke={isDark ? '#60a5fa' : '#2563eb'} strokeWidth={2}
                           dot={{ r: 4 }} activeDot={{ r: 6 }} name="Complaints" />
                       </LineChart>
@@ -354,7 +359,7 @@ export const CivicEyeOverview = () => {
           )}
 
           {/* ---- Recent Tables ---- */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(520px, 1fr))', gap: '1rem' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
             {/* Recent Complaints */}
             <div className="card" style={{ overflow: 'hidden' }}>
               <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

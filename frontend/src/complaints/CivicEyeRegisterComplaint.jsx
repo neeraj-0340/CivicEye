@@ -264,7 +264,7 @@ export const CivicEyeRegisterComplaint = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full py-3 px-4 min-h-[44px] bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">

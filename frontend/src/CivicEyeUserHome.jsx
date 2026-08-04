@@ -158,13 +158,15 @@ export const CivicEyeUserHome = () => {
     (c) => (c.status || "").toLowerCase() === "in progress"
   ).length;
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div style={{ background: 'var(--background)', minHeight: '100vh', color: 'var(--text-primary)' }}>
       <Toaster position="top-right" />
 
       {/* Navigation Bar */}
       <header style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }} className="shadow-md sticky top-0 z-50">
-        <div className="mx-auto flex items-center justify-between py-4 px-6">
+        <div className="mx-auto flex items-center justify-between py-4 px-4 md:px-6">
           <img
             src={logo}
             alt="CivicEye Logo"
@@ -184,13 +186,13 @@ export const CivicEyeUserHome = () => {
             </button>
           </nav>
 
-          {/* Theme Toggle & Profile Dropdown */}
-          <div className="flex items-center space-x-4">
+          {/* Theme Toggle, Profile & Mobile Menu Toggle */}
+          <div className="flex items-center space-x-3 md:space-x-4">
             <ThemeToggle />
 
             <div className="relative">
               <button
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none"
+                className="flex items-center space-x-2 p-1.5 md:p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors focus:outline-none"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
@@ -227,8 +229,42 @@ export const CivicEyeUserHome = () => {
                 </div>
               )}
             </div>
+
+            {/* Mobile Hamburger Toggle Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+              aria-label="Toggle Navigation"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t px-4 py-3 space-y-2" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <Link to="/complaintlist" onClick={() => setMobileMenuOpen(false)} className="block py-2 font-medium hover:text-blue-500" style={{ color: 'var(--text-primary)' }}>
+              My Complaints
+            </Link>
+            <button onClick={() => { scrollToAbout(); setMobileMenuOpen(false); }} className="block w-full text-left py-2 font-medium hover:text-blue-500" style={{ color: 'var(--text-primary)' }}>
+              About
+            </button>
+            <button onClick={() => { scrollToBottom(); setMobileMenuOpen(false); }} className="block w-full text-left py-2 font-medium hover:text-blue-500" style={{ color: 'var(--text-primary)' }}>
+              Contact
+            </button>
+            <Link to="/userprofile" onClick={() => setMobileMenuOpen(false)} className="block py-2 font-medium text-blue-500">
+              My Profile
+            </Link>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
@@ -246,24 +282,24 @@ export const CivicEyeUserHome = () => {
         {!loading && !error && (
           <>
             {/* Hero Banner */}
-            <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 h-96">
+            <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 min-h-[280px] md:h-96 py-10 md:py-0 flex items-center">
               <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white max-w-3xl px-6">
-                  <h1 className="text-4xl font-bold mb-4">Make Your Voice Heard!</h1>
-                  <p className="text-xl mb-8">
+              <div className="relative z-10 w-full flex items-center justify-center">
+                <div className="text-center text-white max-w-3xl px-4 md:px-6">
+                  <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Make Your Voice Heard!</h1>
+                  <p className="text-base md:text-xl mb-6 md:mb-8">
                     Report Problems, Help Your City, and Track Resolutions in Real Time.
                   </p>
-                  <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <div className="flex flex-col sm:flex-row justify-center gap-3 w-full">
                     <Link
                       to="/registercomplaint"
-                      className="bg-white text-blue-700 hover:bg-blue-50 font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-300"
+                      className="bg-white text-blue-700 hover:bg-blue-50 font-medium py-3 px-6 rounded-lg shadow-lg transition-all duration-300 w-full sm:w-auto text-center min-h-[44px] flex items-center justify-center"
                     >
                       Register a Complaint
                     </Link>
                     <Link
                       to="/complaintlist"
-                      className="bg-transparent text-white border-2 border-white hover:bg-white hover:text-blue-700 font-medium py-3 px-6 rounded-lg transition-all duration-300"
+                      className="bg-transparent text-white border-2 border-white hover:bg-white hover:text-blue-700 font-medium py-3 px-6 rounded-lg transition-all duration-300 w-full sm:w-auto text-center min-h-[44px] flex items-center justify-center"
                     >
                       Track Existing Complaints
                     </Link>
@@ -273,19 +309,19 @@ export const CivicEyeUserHome = () => {
             </section>
 
             {/* Dynamic Dashboard Statistics */}
-            <section className="container mx-auto py-16 px-6">
-              <h3 className="text-center text-3xl font-bold mb-12" style={{ color: 'var(--text-primary)' }}>
+            <section className="container mx-auto py-8 md:py-16 px-4 md:px-6">
+              <h3 className="text-center text-2xl md:text-3xl font-bold mb-6 md:mb-12" style={{ color: 'var(--text-primary)' }}>
                 System Impact & Live Statistics
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
                 {/* Total Complaints */}
                 <div className="card shadow-xl rounded-xl overflow-hidden transform transition-transform hover:scale-105 duration-300">
                   <div className="bg-blue-600 h-2"></div>
-                  <div className="p-6">
-                    <p className="text-lg font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                  <div className="p-4 md:p-6">
+                    <p className="text-base md:text-lg font-medium mb-1 md:mb-2" style={{ color: 'var(--text-secondary)' }}>
                       Total Complaints
                     </p>
-                    <p className="text-4xl font-bold text-blue-500">{totalComplaintsCount}</p>
+                    <p className="text-3xl md:text-4xl font-bold text-blue-500">{totalComplaintsCount}</p>
                   </div>
                 </div>
 
@@ -325,12 +361,12 @@ export const CivicEyeUserHome = () => {
             </section>
 
             {/* How It Works Section */}
-            <section id="how-it-works" className="py-16" style={{ background: 'var(--surface)' }}>
-              <div className="container mx-auto px-6">
-                <h3 className="text-center text-3xl font-bold mb-12" style={{ color: 'var(--text-primary)' }}>
+            <section id="how-it-works" className="py-8 md:py-16" style={{ background: 'var(--surface)' }}>
+              <div className="container mx-auto px-4 md:px-6">
+                <h3 className="text-center text-2xl md:text-3xl font-bold mb-6 md:mb-12" style={{ color: 'var(--text-primary)' }}>
                   How It Works
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                   <div className="card p-6 text-center flex flex-col items-center transform transition-transform hover:scale-105 duration-300">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4">
                       <span className="text-2xl font-bold text-blue-600">1</span>
@@ -383,11 +419,11 @@ export const CivicEyeUserHome = () => {
             </section>
 
             {/* Testimonials & Feedback Section */}
-            <section className="container mx-auto py-16 px-6">
-              <h3 className="text-center text-3xl font-bold mb-12" style={{ color: 'var(--text-primary)' }}>
+            <section className="container mx-auto py-8 md:py-16 px-4 md:px-6">
+              <h3 className="text-center text-2xl md:text-3xl font-bold mb-6 md:mb-12" style={{ color: 'var(--text-primary)' }}>
                 Citizen Feedback & Experience
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {latestFeedbacks.length > 0 ? (
                   latestFeedbacks.map((feedbackItem) => (
                     <div key={feedbackItem.id} className="card p-6 relative">
@@ -413,7 +449,7 @@ export const CivicEyeUserHome = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-2 text-center" style={{ color: 'var(--text-muted)' }}>
+                  <div className="col-span-1 lg:col-span-2 text-center py-6" style={{ color: 'var(--text-muted)' }}>
                     <p>No feedback available yet.</p>
                   </div>
                 )}
@@ -432,7 +468,7 @@ export const CivicEyeUserHome = () => {
                     rows="3"
                   />
                   <button
-                    className="btn btn-primary btn-block"
+                    className="btn btn-primary btn-block min-h-[44px]"
                     onClick={handlesubmit}
                   >
                     Submit Feedback
@@ -442,27 +478,27 @@ export const CivicEyeUserHome = () => {
             </section>
 
             {/* Contact Section */}
-            <section className="py-16" style={{ background: 'var(--surface)' }}>
-              <div className="container mx-auto px-6">
-                <h3 className="text-center text-3xl font-bold mb-12" style={{ color: 'var(--text-primary)' }}>
+            <section className="py-8 md:py-16" style={{ background: 'var(--surface)' }}>
+              <div className="container mx-auto px-4 md:px-6">
+                <h3 className="text-center text-2xl md:text-3xl font-bold mb-6 md:mb-12" style={{ color: 'var(--text-primary)' }}>
                   Get in Touch
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="card p-8 text-center flex flex-col items-center">
-                    <h4 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                  <div className="card p-6 md:p-8 text-center flex flex-col items-center">
+                    <h4 className="text-xl md:text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
                       Support Email
                     </h4>
                     <p className="text-blue-500 font-medium mb-4">support@civiceye.com</p>
-                    <a href="mailto:support@civiceye.com" className="btn btn-outline btn-sm">
+                    <a href="mailto:support@civiceye.com" className="btn btn-outline btn-sm min-h-[44px] flex items-center justify-center">
                       Send an Email
                     </a>
                   </div>
-                  <div className="card p-8 text-center flex flex-col items-center">
-                    <h4 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                  <div className="card p-6 md:p-8 text-center flex flex-col items-center">
+                    <h4 className="text-xl md:text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
                       Support Helpline
                     </h4>
                     <p className="text-blue-500 font-medium mb-4">+123 456 7890</p>
-                    <a href="tel:+1234567890" className="btn btn-outline btn-sm">
+                    <a href="tel:+1234567890" className="btn btn-outline btn-sm min-h-[44px] flex items-center justify-center">
                       Call Now
                     </a>
                   </div>
@@ -471,9 +507,9 @@ export const CivicEyeUserHome = () => {
             </section>
 
             {/* Footer */}
-            <footer style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', color: 'var(--text-secondary)' }} className="pt-12 pb-6">
-              <div className="container mx-auto px-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <footer style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', color: 'var(--text-secondary)' }} className="pt-8 md:pt-12 pb-6">
+              <div className="container mx-auto px-4 md:px-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                   <div className="mb-8">
                     <img src={logo} alt="CivicEye Logo" className="h-8 mb-4" />
                     <p className="text-sm" style={{ color: 'var(--text-muted)' }}>

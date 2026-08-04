@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "./assets/celogofull.png";
 import ThemeToggle from "./components/ThemeToggle";
 
 export const CivicEyeHome = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const scrollToBottom = () => {
     document.documentElement.scrollIntoView({
       behavior: "smooth",
@@ -15,9 +17,11 @@ export const CivicEyeHome = () => {
     <div style={{ background: 'var(--background)', minHeight: '100vh', color: 'var(--text-primary)' }}>
       {/* Header */}
       <header className="shadow-md sticky top-0 z-50" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
-        <div className="flex items-center justify-between py-4 px-6 gap-x-10">
+        <div className="flex items-center justify-between py-4 px-4 md:px-6">
           <img src={logo} alt="CivicEye Logo" className="h-6" />
-          <nav className="flex items-center gap-6" style={{ color: 'var(--text-secondary)' }}>
+          
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-6" style={{ color: 'var(--text-secondary)' }}>
             <Link to="/complaintlist" className="hover:text-blue-500">
               My Complaints
             </Link>
@@ -26,12 +30,45 @@ export const CivicEyeHome = () => {
             </button>
             <ThemeToggle />
             <Link to="/login">
-              <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-semibold">
+              <button className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 font-semibold min-h-[44px]">
                 Login
               </button>
             </Link>
           </nav>
+
+          {/* Mobile Right Bar */}
+          <div className="flex md:hidden items-center gap-3">
+            <ThemeToggle />
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Toggle Menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t px-4 py-3 space-y-3" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <Link to="/complaintlist" onClick={() => setMobileMenuOpen(false)} className="block py-2 font-medium" style={{ color: 'var(--text-primary)' }}>
+              My Complaints
+            </Link>
+            <button onClick={() => { scrollToBottom(); setMobileMenuOpen(false); }} className="block w-full text-left py-2 font-medium" style={{ color: 'var(--text-primary)' }}>
+              Contact
+            </button>
+            <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center bg-blue-500 text-white py-2.5 rounded-lg font-semibold min-h-[44px]">
+              Login
+            </Link>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
@@ -56,37 +93,37 @@ export const CivicEyeHome = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="container mx-auto py-12">
-        <h3 className="text-center text-2xl font-semibold mb-8">
+      <section className="container mx-auto py-8 md:py-12 px-4 md:px-6">
+        <h3 className="text-center text-2xl font-semibold mb-6 md:mb-8">
           Complaint Reports
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-          <div className="bg-white shadow-lg p-6 rounded-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-center">
+          <div className="card shadow-lg p-6 rounded-lg">
             <p className="text-xl font-semibold">Complaints registered</p>
-            <p className="text-3xl font-bold">1002</p>
+            <p className="text-3xl font-bold text-blue-500 mt-2">1002</p>
           </div>
-          <div className="bg-white shadow-lg p-6 rounded-lg">
+          <div className="card shadow-lg p-6 rounded-lg">
             <p className="text-xl font-semibold">Reports filed</p>
-            <p className="text-3xl font-bold">992</p>
+            <p className="text-3xl font-bold text-blue-500 mt-2">992</p>
           </div>
-          <div className="bg-white shadow-lg p-6 rounded-lg">
+          <div className="card shadow-lg p-6 rounded-lg">
             <p className="text-xl font-semibold">Rewards distributed</p>
-            <p className="text-3xl font-bold">886</p>
+            <p className="text-3xl font-bold text-blue-500 mt-2">886</p>
           </div>
-          <div className="bg-white shadow-lg p-6 rounded-lg">
+          <div className="card shadow-lg p-6 rounded-lg">
             <p className="text-xl font-semibold">Impact made</p>
-            <p className="text-3xl font-bold">.......</p>
+            <p className="text-3xl font-bold text-blue-500 mt-2">High</p>
           </div>
         </div>
       </section>
 
       {/* What We Do Section */}
-      <section className="py-12" style={{ background: 'var(--surface)' }}>
-        <div className="container mx-auto">
-          <h3 className="text-center text-2xl font-semibold mb-8" style={{ color: 'var(--text-primary)' }}>
+      <section className="py-8 md:py-12" style={{ background: 'var(--surface)' }}>
+        <div className="container mx-auto px-4 md:px-6">
+          <h3 className="text-center text-2xl font-semibold mb-6 md:mb-8" style={{ color: 'var(--text-primary)' }}>
             What We Do
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-center">
             <div className="card p-6">
               <p style={{ color: 'var(--text-primary)' }}>1. Register the Complaint</p>
             </div>

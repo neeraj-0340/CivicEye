@@ -80,6 +80,8 @@ export const CivicEyeComplaintList = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '0.5rem',
       }}>
         <button
           className="btn btn-ghost btn-sm"

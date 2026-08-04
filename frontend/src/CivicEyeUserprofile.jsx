@@ -102,14 +102,14 @@ export const CivicEyeUserprofile = () => {
         <div className="card overflow-hidden" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-700 to-purple-600 p-6 sm:p-8">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h1 className="text-white text-2xl font-bold">User Profile</h1>
                 <p className="text-blue-100 mt-1">
                   Manage your personal information
                 </p>
               </div>
-              <img src={logo} alt="CivicEye Logo" className="h-10 md:h-12" />
+              <img src={logo} alt="CivicEye Logo" className="h-8 sm:h-10 md:h-12 max-w-full" />
             </div>
           </div>
 
