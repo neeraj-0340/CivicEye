@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api, { API_BASE_URL } from '../api/config';
 import toast, { Toaster } from 'react-hot-toast';
+import ThemeToggle from '../components/ThemeToggle';
 
 export const AdminComplaintDetail = () => {
   const { id } = useParams();
@@ -175,12 +176,15 @@ export const AdminComplaintDetail = () => {
         <Toaster/>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Complaint Details</h2>
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-primary btn-sm"
-          >
-            Back to List
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <ThemeToggle />
+            <button
+              onClick={() => navigate(-1)}
+              className="btn btn-primary btn-sm min-h-[44px]"
+            >
+              Back to List
+            </button>
+          </div>
         </div>
 
         <div className="mb-6">

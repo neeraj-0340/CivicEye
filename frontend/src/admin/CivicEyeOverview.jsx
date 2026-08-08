@@ -15,6 +15,7 @@ import { SkeletonStatCard } from "../components/Skeleton";
 import EmptyState from "../components/EmptyState";
 import StatusBadge from "../components/StatusBadge";
 import AdminSidebar, { AdminMobileHeader } from "../components/AdminSidebar";
+import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../contexts/ThemeContext";
 
 const COMPLAINT_COLORS = ['#f59e0b', '#0891b2', '#16a34a', '#dc2626'];
@@ -208,9 +209,12 @@ export const CivicEyeOverview = () => {
               Real-time statistics and recent activity
             </p>
           </div>
-          <button className="btn btn-primary btn-sm" onClick={fetchAll} disabled={loading}>
-            {loading ? '↻ Refreshing…' : '↻ Refresh'}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <ThemeToggle />
+            <button className="btn btn-primary btn-sm min-h-[44px]" onClick={fetchAll} disabled={loading}>
+              {loading ? '↻ Refreshing…' : '↻ Refresh'}
+            </button>
+          </div>
         </div>
 
         <div className="admin-content">

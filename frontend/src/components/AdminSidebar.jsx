@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiBarChart2, FiAlertCircle, FiUsers, FiMessageSquare, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
 import logo from '../assets/celogofull.png';
-import ThemeToggle from './ThemeToggle';
 
 const NAV_ITEMS = [
   { to: '/overview', label: 'Overview', Icon: FiBarChart2 },
@@ -38,7 +37,6 @@ export const AdminMobileHeader = ({ onToggleSidebar, title = 'Admin Panel' }) =>
           {title}
         </span>
       </div>
-      <ThemeToggle />
     </div>
   );
 };
@@ -62,7 +60,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       />
 
       <div className={`admin-sidebar ${isOpen ? 'mobile-open' : ''}`}>
-        {/* Logo & Theme Toggle */}
+        {/* Logo */}
         <div style={{
           padding: '1.25rem 1.5rem',
           borderBottom: '1px solid var(--border)',
@@ -71,30 +69,27 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           justifyContent: 'space-between',
         }}>
           <img src={logo} alt="CivicEye" style={{ height: 36 }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ThemeToggle />
-            {onClose && (
-              <button
-                onClick={onClose}
-                aria-label="Close Sidebar"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--text-secondary)',
-                  cursor: 'pointer',
-                  fontSize: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '0.5rem',
-                  minHeight: '44px',
-                  minWidth: '44px',
-                }}
-              >
-                <FiX />
-              </button>
-            )}
-          </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              aria-label="Close Sidebar"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                fontSize: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0.5rem',
+                minHeight: '44px',
+                minWidth: '44px',
+              }}
+            >
+              <FiX />
+            </button>
+          )}
         </div>
 
         {/* Nav links */}

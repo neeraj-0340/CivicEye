@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import AdminSidebar, { AdminMobileHeader } from "../components/AdminSidebar";
 import DataTable from "../components/DataTable";
 import usePagination from "../hooks/usePagination";
+import ThemeToggle from "../components/ThemeToggle";
 
 export const CivicEyeUserManagement = () => {
   const navigate = useNavigate();
@@ -112,33 +113,36 @@ export const CivicEyeUserManagement = () => {
             </p>
           </div>
 
-          <div className="mobile-filter-bar" style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            <div style={{ position: "relative", flex: 1 }}>
-              <FiSearch
-                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
-                size={16}
-              />
-              <input
-                type="text"
-                placeholder="Search users…"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="form-input"
-                style={{ paddingLeft: 36 }}
-              />
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button className="btn btn-primary btn-sm min-h-[44px]" onClick={handleSearch}>
-                Search
-              </button>
-              <button
-                className="btn btn-ghost btn-sm min-h-[44px]"
-                onClick={() => { setSearchInput(""); updateFilters({}); }}
-                title="Clear search"
-              >
-                <FiRefreshCw size={16} />
-              </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <ThemeToggle />
+            <div className="mobile-filter-bar" style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+              <div style={{ position: "relative", flex: 1 }}>
+                <FiSearch
+                  style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
+                  size={16}
+                />
+                <input
+                  type="text"
+                  placeholder="Search users…"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="form-input"
+                  style={{ paddingLeft: 36 }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button className="btn btn-primary btn-sm min-h-[44px]" onClick={handleSearch}>
+                  Search
+                </button>
+                <button
+                  className="btn btn-ghost btn-sm min-h-[44px]"
+                  onClick={() => { setSearchInput(""); updateFilters({}); }}
+                  title="Clear search"
+                >
+                  <FiRefreshCw size={16} />
+                </button>
+              </div>
             </div>
           </div>
         </div>

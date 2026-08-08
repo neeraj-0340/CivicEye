@@ -54,9 +54,31 @@ export const getAllFeedback = async (req, res) => {
         res.status(500).json({ message: "Error retrieving feedback", error });
     }
 };
+export const getFeedbackById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message: "Feedback ID is required" });
+        }
+
+        const feedbackItem = await feedback.findById(id).populate("userId", "name email");
+
+        if (!feedbackItem) {
+            return res.status(404).json({ message: "Feedback not found" });
+        }
+
+        res.status(200).json(feedbackItem);
+    } catch (error) {
+        console.error("Error retrieving feedback by ID:", error);
+        res.status(500).json({ message: "Error retrieving feedback details", error: error.message });
+    }
+};
+
 export const updateFeedbackStatus = async (req, res) => {
     try {
-        const { feedbackId, status } = req.body;
+        const feedbackId = req.params.id || req.body.feedbackId;
+        const { status } = req.body;
 
         if (!feedbackId || !status) {
             return res.status(400).json({ message: "Feedback ID and status are required" });
@@ -70,7 +92,7 @@ export const updateFeedbackStatus = async (req, res) => {
             feedbackId,
             { status },
             { new: true }
-        );
+        ).populate("userId", "name email");
 
         if (!updatedFeedback) {
             return res.status(404).json({ message: "Feedback not found" });

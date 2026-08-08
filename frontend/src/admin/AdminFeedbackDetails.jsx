@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/config";
 import toast, { Toaster } from "react-hot-toast";
 import AdminSidebar, { AdminMobileHeader } from "../components/AdminSidebar";
+import ThemeToggle from "../components/ThemeToggle";
 
 export const AdminFeedbackDetails = () => {
   const { id } = useParams();
@@ -36,7 +37,8 @@ export const AdminFeedbackDetails = () => {
       const response = await api.put(`/feedback/update-status/${id}`, {
         status: newStatus,
       });
-      setFeedback(response.data);
+      const updated = response.data.feedback || response.data;
+      setFeedback(updated);
       toast.success(`Feedback status updated to ${newStatus}`);
     } catch (err) {
       console.error("Error updating feedback status:", err);
@@ -66,12 +68,15 @@ export const AdminFeedbackDetails = () => {
               Feedback Details
             </h1>
           </div>
-          <button
-            onClick={() => navigate("/feedbackmanagement")}
-            className="btn btn-primary btn-sm"
-          >
-            Back to Feedback List
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <ThemeToggle />
+            <button
+              onClick={() => navigate("/feedbackmanagement")}
+              className="btn btn-primary btn-sm min-h-[44px]"
+            >
+              Back to Feedback List
+            </button>
+          </div>
         </div>
 
         <div className="admin-content">

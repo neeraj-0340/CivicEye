@@ -6,6 +6,7 @@ import AdminSidebar, { AdminMobileHeader } from "../components/AdminSidebar";
 import DataTable from "../components/DataTable";
 import StatusBadge from "../components/StatusBadge";
 import usePagination from "../hooks/usePagination";
+import ThemeToggle from "../components/ThemeToggle";
 
 const STATUS_TABS = ["All", "Pending", "In Progress", "Resolved", "Rejected"];
 
@@ -128,34 +129,37 @@ export const CiviEyeComplaintManagement = () => {
             </p>
           </div>
 
-          {/* Search bar */}
-          <div className="mobile-filter-bar" style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            <div style={{ position: "relative", flex: 1 }}>
-              <FiSearch
-                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
-                size={16}
-              />
-              <input
-                type="text"
-                placeholder="Search complaints…"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="form-input"
-                style={{ paddingLeft: 36 }}
-              />
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button className="btn btn-primary btn-sm min-h-[44px]" onClick={handleSearch}>
-                Search
-              </button>
-              <button
-                className="btn btn-ghost btn-sm min-h-[44px]"
-                onClick={() => { setSearchInput(""); setActiveTab("All"); updateFilters({}); }}
-                title="Reset filters"
-              >
-                <FiRefreshCw size={16} />
-              </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <ThemeToggle />
+            {/* Search bar */}
+            <div className="mobile-filter-bar" style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+              <div style={{ position: "relative", flex: 1 }}>
+                <FiSearch
+                  style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}
+                  size={16}
+                />
+                <input
+                  type="text"
+                  placeholder="Search complaints…"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="form-input"
+                  style={{ paddingLeft: 36 }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button className="btn btn-primary btn-sm min-h-[44px]" onClick={handleSearch}>
+                  Search
+                </button>
+                <button
+                  className="btn btn-ghost btn-sm min-h-[44px]"
+                  onClick={() => { setSearchInput(""); setActiveTab("All"); updateFilters({}); }}
+                  title="Reset filters"
+                >
+                  <FiRefreshCw size={16} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
