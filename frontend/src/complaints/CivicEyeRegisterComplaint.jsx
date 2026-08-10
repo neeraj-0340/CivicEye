@@ -166,6 +166,7 @@ export const CivicEyeRegisterComplaint = () => {
                 value={formData.type}
                 onChange={handleChange}
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                style={{ background: 'var(--surface)', color: 'var(--text)' }}
                 required
               >
                 <option value="">Select Type</option>
@@ -208,7 +209,8 @@ export const CivicEyeRegisterComplaint = () => {
                 value={formData.location}
                 onChange={handleChange}
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                placeholder="Enter location"
+                style={{ background: 'var(--surface)', color: 'var(--text)' }}
+                placeholder="Where did this happen?"
                 required
               />
             </div>
@@ -222,9 +224,10 @@ export const CivicEyeRegisterComplaint = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 rows="4"
-                placeholder="Describe what happened"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-y"
+                style={{ background: 'var(--surface)', color: 'var(--text)' }}
+                placeholder="Provide details about the incident..."
                 required
               ></textarea>
             </div>
