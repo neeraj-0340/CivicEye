@@ -1,5 +1,6 @@
 import feedback from "../model/FeedbackSchema.js";
 import { getPagination, buildPaginationMeta } from '../utils/paginate.js';
+import mongoose from "mongoose";
 
 export const addFeedback = async (req, res) => {
     try {
@@ -62,6 +63,10 @@ export const getFeedbackById = async (req, res) => {
             return res.status(400).json({ message: "Feedback ID is required" });
         }
 
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ message: "Feedback not found" });
+        }
+
         const feedbackItem = await feedback.findById(id).populate("userId", "name email");
 
         if (!feedbackItem) {
@@ -88,6 +93,10 @@ export const updateFeedbackStatus = async (req, res) => {
             return res.status(400).json({ message: "Invalid status value" });
         }
 
+        if (!mongoose.Types.ObjectId.isValid(feedbackId)) {
+            return res.status(404).json({ message: "Feedback not found" });
+        }
+
         const updatedFeedback = await feedback.findByIdAndUpdate(
             feedbackId,
             { status },
@@ -104,7 +113,7 @@ export const updateFeedbackStatus = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Error updating feedback status", error });
+        res.status(500).json({ message: "Error updating feedback status", error: error.message });
     }
 };
 

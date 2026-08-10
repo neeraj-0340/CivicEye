@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiBarChart2, FiAlertCircle, FiUsers, FiMessageSquare, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiBarChart2, FiAlertCircle, FiUsers, FiMessageSquare, FiLogOut, FiMenu } from 'react-icons/fi';
 import logo from '../assets/celogofull.png';
 
 const NAV_ITEMS = [
@@ -66,30 +66,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           borderBottom: '1px solid var(--border)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
         }}>
           <img src={logo} alt="CivicEye" style={{ height: 36 }} />
-          {onClose && (
-            <button
-              onClick={onClose}
-              aria-label="Close Sidebar"
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-secondary)',
-                cursor: 'pointer',
-                fontSize: '1.25rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0.5rem',
-                minHeight: '44px',
-                minWidth: '44px',
-              }}
-            >
-              <FiX />
-            </button>
-          )}
         </div>
 
         {/* Nav links */}

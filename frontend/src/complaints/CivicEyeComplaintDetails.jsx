@@ -29,7 +29,7 @@ export const CivicEyeComplaintDetails = () => {
 
       setComplaint(response.data);
       const proofPath = response.data.proof;
-      const extension = proofPath.split('.').pop().toLowerCase();
+      const extension = proofPath.split('?')[0].split('.').pop().toLowerCase();
       if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
         setMediaType('image');
       } else if (['mp4', 'mov', 'avi', 'wmv'].includes(extension)) {
@@ -92,9 +92,23 @@ export const CivicEyeComplaintDetails = () => {
 
   const renderProofMedia = () => {
     if (!complaint || !complaint.proof) return null;
-    const serverUrl = API_BASE_URL;
-    const filePath = complaint.proof.replace(/^.*[\\\/]uploads[\\\/]/, '/uploads/');
-    const mediaUrl = `${serverUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
+    
+    let mediaUrl;
+    if (complaint.proof.startsWith('http://') || complaint.proof.startsWith('https://')) {
+      mediaUrl = complaint.proof;
+    } else {
+      // Get the server URL (assuming uploads are served from backend)
+      const serverUrl = API_BASE_URL;
+      
+      // Normalize any Windows backslashes to forward slashes
+      const normalizedPath = complaint.proof.replace(/\\/g, '/');
+      
+      // Extract the file path (remove any absolute path and keep relative path)
+      const filePath = normalizedPath.replace(/^.*\/uploads\//, '/uploads/');
+      
+      // Construct full URL
+      mediaUrl = `${serverUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
+    }
 
     if (mediaType === 'image') {
       return (
@@ -115,7 +129,7 @@ export const CivicEyeComplaintDetails = () => {
             className="max-w-full rounded border border-gray-200"
             style={{ maxHeight: '400px' }}
           >
-            <source src={mediaUrl} type={`video/${complaint.proof.split('.').pop().toLowerCase()}`} />
+            <source src={mediaUrl} type={`video/${complaint.proof.split('?')[0].split('.').pop().toLowerCase()}`} />
             Your browser does not support the video tag.
           </video>
         </div>

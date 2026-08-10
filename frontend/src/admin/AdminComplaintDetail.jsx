@@ -35,7 +35,7 @@ export const AdminComplaintDetail = () => {
       
       // Determine media type based on file extension
       const proofPath = response.data.proof;
-      const extension = proofPath.split('.').pop().toLowerCase();
+      const extension = proofPath.split('?')[0].split('.').pop().toLowerCase();
       
       if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
         setMediaType('image');
@@ -73,14 +73,22 @@ export const AdminComplaintDetail = () => {
   const renderProofMedia = () => {
     if (!complaint || !complaint.proof) return null;
     
-    // Get the server URL (assuming uploads are served from backend)
-    const serverUrl = API_BASE_URL;
-    
-    // Extract the file path (remove any absolute path and keep relative path)
-    const filePath = complaint.proof.replace(/^.*[\\\/]uploads[\\\/]/, '/uploads/');
-    
-    // Construct full URL
-    const mediaUrl = `${serverUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
+    let mediaUrl;
+    if (complaint.proof.startsWith('http://') || complaint.proof.startsWith('https://')) {
+      mediaUrl = complaint.proof;
+    } else {
+      // Get the server URL (assuming uploads are served from backend)
+      const serverUrl = API_BASE_URL;
+      
+      // Normalize any Windows backslashes to forward slashes
+      const normalizedPath = complaint.proof.replace(/\\/g, '/');
+      
+      // Extract the file path (remove any absolute path and keep relative path)
+      const filePath = normalizedPath.replace(/^.*\/uploads\//, '/uploads/');
+      
+      // Construct full URL
+      mediaUrl = `${serverUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
+    }
     
     if (mediaType === 'image') {
       return (
@@ -101,7 +109,7 @@ export const AdminComplaintDetail = () => {
             className="max-w-full rounded border border-gray-200"
             style={{ maxHeight: '400px' }}
           >
-            <source src={mediaUrl} type={`video/${complaint.proof.split('.').pop().toLowerCase()}`} />
+            <source src={mediaUrl} type={`video/${complaint.proof.split('?')[0].split('.').pop().toLowerCase()}`} />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -239,7 +247,8 @@ export const AdminComplaintDetail = () => {
           <select
             value={newStatus}
             onChange={(e) => setNewStatus(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2"
+            className="form-input"
+            style={{ width: 'auto', minWidth: '160px', padding: '0.5rem 1rem' }}
           >
             <option value="">Select Status</option>
             <option value="Pending">Pending</option>

@@ -17,8 +17,18 @@ export const AdminFeedbackDetails = () => {
   useEffect(() => {
     const fetchFeedbackDetails = async () => {
       try {
-        const response = await api.get(`/feedback/view/${id}`);
-        setFeedback(response.data);
+        // Because older deployments of the backend lack the direct /view/:id endpoints,
+        // attempting them logs noisy 404 errors in the browser console.
+        // We fetch all feedbacks directly to silently resolve the feedback details.
+        const allResponse = await api.get('/feedback/all');
+        const allFeedbacks = allResponse.data?.data || allResponse.data;
+        const found = allFeedbacks.find(f => f._id === id);
+        
+        if (found) {
+          setFeedback(found);
+        } else {
+          throw new Error("Feedback not found");
+        }
       } catch (err) {
         console.error("Error fetching feedback details:", err);
         setError(err.response?.data?.message || "Failed to load feedback details");
@@ -34,10 +44,25 @@ export const AdminFeedbackDetails = () => {
 
   const handleStatusUpdate = async (newStatus) => {
     try {
-      const response = await api.put(`/feedback/update-status/${id}`, {
-        status: newStatus,
-      });
-      const updated = response.data.feedback || response.data;
+      let response;
+      try {
+        response = await api.put(`/feedback/update-status/${id}`, { status: newStatus });
+      } catch (err1) {
+        if (err1.response?.status === 404) {
+          try {
+            response = await api.put(`/feedback/updatestatus`, { feedbackId: id, status: newStatus });
+          } catch (err2) {
+            if (err2.response?.status === 404) {
+              response = await api.put(`/feedback/${id}`, { status: newStatus });
+            } else {
+              throw err2;
+            }
+          }
+        } else {
+          throw err1;
+        }
+      }
+      const updated = response.data?.feedback || response.data?.data || response.data;
       setFeedback(updated);
       toast.success(`Feedback status updated to ${newStatus}`);
     } catch (err) {
