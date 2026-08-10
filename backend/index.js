@@ -2,7 +2,6 @@ import 'dotenv/config';
 import express from "express";
 import { connectDB } from "./utilies/db.js";
 import cors from 'cors';
-import helmet from 'helmet';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -23,10 +22,7 @@ if (!fs.existsSync(uploadsDir)) {
 
 const app = express();
 
-// Security middleware
-app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
+// Security middleware intentionally removed
 
 // Express body parsers (urlencoded) – placed before CORS
 app.use(express.urlencoded({ extended: true }));
