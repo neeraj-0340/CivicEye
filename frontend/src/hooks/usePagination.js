@@ -1,5 +1,10 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import api from '../api/config';
+
+// Module-level cache to persist data across component unmounts (e.g. back/forward navigation)
+const globalCache = {};
+// Module-level state to persist page and filters
+const globalState = {};
 
 /**
  * usePagination — fetches a paginated API endpoint and manages all pagination state.
@@ -14,8 +19,8 @@ const usePagination = (url, initialFilters = {}, initialPage = 1, pageSize = 10,
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(initialPage);
-  const [filters, setFilters] = useState(initialFilters);
+  const [page, setPage] = useState(() => globalState[url]?.page || initialPage);
+  const [filters, setFilters] = useState(() => globalState[url]?.filters || initialFilters);
   const [paginationMeta, setPaginationMeta] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -23,15 +28,12 @@ const usePagination = (url, initialFilters = {}, initialPage = 1, pageSize = 10,
     pageSize,
   });
 
-  // In-memory page cache (key: JSON of page+filters)
-  const cache = useRef({});
-
   const fetchData = useCallback(async (pageNum = page, currentFilters = filters) => {
     if (!url) return;
 
-    const cacheKey = JSON.stringify({ pageNum, currentFilters });
-    if (cache.current[cacheKey]) {
-      const cached = cache.current[cacheKey];
+    const cacheKey = JSON.stringify({ url, pageNum, currentFilters });
+    if (globalCache[cacheKey]) {
+      const cached = globalCache[cacheKey];
       setData(cached.data);
       setPaginationMeta(cached.pagination);
       return;
@@ -64,7 +66,7 @@ const usePagination = (url, initialFilters = {}, initialPage = 1, pageSize = 10,
       }
 
       // Cache the result
-      cache.current[cacheKey] = { data: resultData, pagination: resultPagination };
+      globalCache[cacheKey] = { data: resultData, pagination: resultPagination };
 
       setData(resultData);
       setPaginationMeta(resultPagination);
@@ -77,6 +79,9 @@ const usePagination = (url, initialFilters = {}, initialPage = 1, pageSize = 10,
   }, [url, page, filters, pageSize]);
 
   useEffect(() => {
+    // Save current page and filters to global state so they survive unmounts
+    globalState[url] = { page, filters };
+    
     if (autoFetch) {
       fetchData(page, filters);
     }
@@ -88,17 +93,20 @@ const usePagination = (url, initialFilters = {}, initialPage = 1, pageSize = 10,
   }, []);
 
   const updateFilters = useCallback((newFilters) => {
-    // Reset to page 1 when filters change, and clear cache
-    cache.current = {};
+    // Reset to page 1 when filters change (we keep the cache for previous states though)
     setFilters(newFilters);
     setPage(1);
   }, []);
 
   const refresh = useCallback(() => {
-    // Clear cache and re-fetch current page
-    cache.current = {};
+    // Clear ALL cache for this specific URL and re-fetch current page
+    Object.keys(globalCache).forEach(key => {
+      if (key.includes(`"url":"${url}"`)) {
+        delete globalCache[key];
+      }
+    });
     fetchData(page, filters);
-  }, [fetchData, page, filters]);
+  }, [fetchData, page, filters, url]);
 
   return {
     data,
